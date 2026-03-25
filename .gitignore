@@ -10,6 +10,10 @@ Thumbs.db
 node_modules/
 target/
 
+# frontend build
+dist/
+.vite/
+
 # Config (secrets)
 *.env
 .env*
