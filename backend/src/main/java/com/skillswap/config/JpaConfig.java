@@ -1,6 +1,5 @@
 package com.skillswap.config;
 
-import com.skillswap.model.StringListConverter;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,16 +30,6 @@ public class JpaConfig {
         
         emf.setJpaProperties(jpaProperties);
         
-        // Force converter registration
-        emf.getJpaPropertyMap().put("hibernate.metadata_builder_contributor", new HibernateMetadataBuilderContributor());
-        
         return emf;
-    }
-    
-    private static class HibernateMetadataBuilderContributor implements org.hibernate.boot.spi.MetadataBuilderContributor {
-        @Override
-        public void contribute(org.hibernate.boot.MetadataBuilder metadataBuilder) {
-            metadataBuilder.applyAttributeConverter(StringListConverter.class);
-        }
     }
 }
