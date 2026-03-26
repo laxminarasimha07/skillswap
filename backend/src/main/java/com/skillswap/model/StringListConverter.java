@@ -8,7 +8,7 @@ import jakarta.persistence.Converter;
 import java.io.IOException;
 import java.util.List;
 
-@Converter(autoApply = true)
+@Converter
 public class StringListConverter implements AttributeConverter<List<String>, String> {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
