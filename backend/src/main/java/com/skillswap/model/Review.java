@@ -1,9 +1,7 @@
 package com.skillswap.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "reviews")
 public class Review {
@@ -29,4 +27,26 @@ public class Review {
 
     @Column(columnDefinition = "TEXT")
     private String comment;
+
+    // No-arg constructor for JPA
+    public Review() {}
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getReviewer() { return reviewer; }
+    public void setReviewer(User reviewer) { this.reviewer = reviewer; }
+
+    public User getReviewed() { return reviewed; }
+    public void setReviewed(User reviewed) { this.reviewed = reviewed; }
+
+    public Session getSession() { return session; }
+    public void setSession(Session session) { this.session = session; }
+
+    public int getRating() { return rating; }
+    public void setRating(int rating) { this.rating = rating; }
+
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
 }

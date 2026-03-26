@@ -47,14 +47,9 @@ public class AuthService {
         user.setBranch(registerRequest.getBranch());
         user.setYear(registerRequest.getYear());
         
-        // Ensure skills lists are properly handled
-        List<String> offeredSkills = registerRequest.getSkillsOffered() != null ? 
-            registerRequest.getSkillsOffered() : List.of();
-        List<String> wantedSkills = registerRequest.getSkillsWanted() != null ? 
-            registerRequest.getSkillsWanted() : List.of();
-            
-        user.setSkillsOffered(offeredSkills);
-        user.setSkillsWanted(wantedSkills);
+        // Direct assignment - RegisterRequest initializes lists as empty if null
+        user.setSkillsOffered(registerRequest.getSkillsOffered());
+        user.setSkillsWanted(registerRequest.getSkillsWanted());
 
         userRepository.save(user);
 

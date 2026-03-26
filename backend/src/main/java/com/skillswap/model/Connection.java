@@ -1,11 +1,9 @@
 package com.skillswap.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "connections")
 public class Connection {
@@ -29,6 +27,25 @@ public class Connection {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    // No-arg constructor for JPA
+    public Connection() {}
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getSender() { return sender; }
+    public void setSender(User sender) { this.sender = sender; }
+
+    public User getReceiver() { return receiver; }
+    public void setReceiver(User receiver) { this.receiver = receiver; }
+
+    public ConnectionStatus getStatus() { return status; }
+    public void setStatus(ConnectionStatus status) { this.status = status; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public enum ConnectionStatus {
         PENDING,

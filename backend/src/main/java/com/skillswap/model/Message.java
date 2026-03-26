@@ -1,11 +1,9 @@
 package com.skillswap.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "messages")
 public class Message {
@@ -30,4 +28,26 @@ public class Message {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime timestamp;
+
+    // No-arg constructor for JPA
+    public Message() {}
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getSender() { return sender; }
+    public void setSender(User sender) { this.sender = sender; }
+
+    public User getReceiver() { return receiver; }
+    public void setReceiver(User receiver) { this.receiver = receiver; }
+
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public String getFileUrl() { return fileUrl; }
+    public void setFileUrl(String fileUrl) { this.fileUrl = fileUrl; }
+
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }

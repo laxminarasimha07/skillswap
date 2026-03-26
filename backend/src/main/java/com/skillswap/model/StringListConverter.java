@@ -8,10 +8,10 @@ import jakarta.persistence.Converter;
 import java.io.IOException;
 import java.util.List;
 
-@Converter
+@Converter(autoApply = true)
 public class StringListConverter implements AttributeConverter<List<String>, String> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public String convertToDatabaseColumn(List<String> attribute) {
