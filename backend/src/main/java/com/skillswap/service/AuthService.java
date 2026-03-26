@@ -35,10 +35,11 @@ public class AuthService {
     private UserRepository userRepository;
 
     public AuthResponse register(RegisterRequest registerRequest) {
-        // Remove email domain restriction for now
-        // if (!registerRequest.getEmail().endsWith("@anurag.edu.in")) {
-        //     throw new IllegalArgumentException("Invalid email domain");
-        // }
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.BAD_REQUEST, "Email is already registered"
+            );
+        }
 
         User user = new User();
         user.setName(registerRequest.getName());
