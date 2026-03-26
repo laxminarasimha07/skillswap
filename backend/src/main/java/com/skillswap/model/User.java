@@ -2,6 +2,8 @@ package com.skillswap.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,12 +30,12 @@ public class User {
     @Column(nullable = false)
     private String year;
 
-    @Convert(converter = StringListConverter.class)
-    @Column(columnDefinition = "json")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private List<String> skillsOffered;
 
-    @Convert(converter = StringListConverter.class)
-    @Column(columnDefinition = "json")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private List<String> skillsWanted;
 
     @Column(nullable = false)
