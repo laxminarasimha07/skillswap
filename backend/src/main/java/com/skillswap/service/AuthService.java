@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthService {
 
@@ -44,8 +46,15 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setBranch(registerRequest.getBranch());
         user.setYear(registerRequest.getYear());
-        user.setSkillsOffered(registerRequest.getSkillsOffered());
-        user.setSkillsWanted(registerRequest.getSkillsWanted());
+        
+        // Ensure skills lists are properly handled
+        List<String> offeredSkills = registerRequest.getSkillsOffered() != null ? 
+            registerRequest.getSkillsOffered() : List.of();
+        List<String> wantedSkills = registerRequest.getSkillsWanted() != null ? 
+            registerRequest.getSkillsWanted() : List.of();
+            
+        user.setSkillsOffered(offeredSkills);
+        user.setSkillsWanted(wantedSkills);
 
         userRepository.save(user);
 

@@ -27,7 +27,7 @@ public class RegisterRequest {
     @NotBlank
     private String year;
 
-    private List<String> skillsOffered;
+    private List<String> skillsOffered = List.of();
 
-    private List<String> skillsWanted;
+    private List<String> skillsWanted = List.of();
 }

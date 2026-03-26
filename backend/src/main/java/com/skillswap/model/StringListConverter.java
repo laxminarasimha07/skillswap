@@ -21,19 +21,21 @@ public class StringListConverter implements AttributeConverter<List<String>, Str
         try {
             return objectMapper.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error converting list to JSON", e);
+            // Fallback to empty array if JSON conversion fails
+            return "[]";
         }
     }
 
     @Override
     public List<String> convertToEntityAttribute(String dbData) {
-        if (dbData == null || dbData.isEmpty()) {
+        if (dbData == null || dbData.trim().isEmpty()) {
             return List.of();
         }
         try {
             return objectMapper.readValue(dbData, new TypeReference<List<String>>() {});
         } catch (IOException e) {
-            throw new IllegalArgumentException("Error converting JSON to list", e);
+            // Fallback to empty list if JSON parsing fails
+            return List.of();
         }
     }
 }

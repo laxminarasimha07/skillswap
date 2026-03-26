@@ -50,4 +50,13 @@ public class User {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
+    
+    // Ensure lists are never null
+    public List<String> getSkillsOffered() {
+        return skillsOffered != null ? skillsOffered : List.of();
+    }
+    
+    public List<String> getSkillsWanted() {
+        return skillsWanted != null ? skillsWanted : List.of();
+    }
 }
