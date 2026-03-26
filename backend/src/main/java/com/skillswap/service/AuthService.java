@@ -33,9 +33,10 @@ public class AuthService {
     private UserRepository userRepository;
 
     public AuthResponse register(RegisterRequest registerRequest) {
-        if (!registerRequest.getEmail().endsWith("@anurag.edu.in")) {
-            throw new IllegalArgumentException("Invalid email domain");
-        }
+        // Remove email domain restriction for now
+        // if (!registerRequest.getEmail().endsWith("@anurag.edu.in")) {
+        //     throw new IllegalArgumentException("Invalid email domain");
+        // }
 
         User user = new User();
         user.setName(registerRequest.getName());
