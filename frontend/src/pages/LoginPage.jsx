@@ -10,10 +10,7 @@ import Button from '../components/shared/Button';
 import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address').refine(
-    (email) => email.endsWith('@anurag.edu.in'),
-    { message: 'Only @anurag.edu.in emails are allowed' }
-  ),
+  email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -64,7 +61,7 @@ const LoginPage = () => {
             <Input
               label="College Email"
               type="email"
-              placeholder="e.g. 23eg104d35@anurag.edu.in"
+              placeholder="e.g. your.email@example.com"
               {...register('email')}
               error={errors.email?.message}
             />

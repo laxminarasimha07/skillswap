@@ -11,10 +11,7 @@ import toast from 'react-hot-toast';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name is too short'),
-  email: z.string().email('Invalid email address').refine(
-    (email) => email.endsWith('@anurag.edu.in'),
-    { message: 'Only @anurag.edu.in emails are allowed' }
-  ),
+  email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   branch: z.string().min(2, 'Branch is required'),
   year: z.string().min(1, 'Year is required'),
@@ -84,7 +81,7 @@ const RegisterPage = () => {
               <Input
                 label="College Email"
                 type="email"
-                placeholder="23eg104d35@anurag.edu.in"
+                placeholder="your.email@example.com"
                 {...register('email')}
                 error={errors.email?.message}
               />
