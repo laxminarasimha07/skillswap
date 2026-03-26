@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken, removeToken } from '../utils/tokenStorage';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://swapskill-backend-3a00.onrender.com/api',
+  baseURL: 'https://swapskill-backend-3a00.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
