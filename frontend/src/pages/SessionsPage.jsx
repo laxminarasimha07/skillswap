@@ -75,34 +75,8 @@ const SessionsPage = () => {
             onClick={async () => {
               try {
                 const { data } = await axiosInstance.get('/oauth2/authorize-url');
-                // Open in a popup window instead of redirecting
-                const width = 500;
-                const height = 600;
-                const left = (window.innerWidth - width) / 2;
-                const top = (window.innerHeight - height) / 2;
-                const popup = window.open(
-                  data.url,
-                  'Google Calendar Auth',
-                  `width=${width},height=${height},left=${left},top=${top}`
-                );
-                
-                // Check if the popup was closed
-                const popupCheckInterval = setInterval(() => {
-                  if (popup.closed) {
-                    clearInterval(popupCheckInterval);
-                    // Reload sessions data after calendar connection
-                    const loadSessions = async () => {
-                      try {
-                        const sessionData = await sessionApi.getMySessions();
-                        setSessions(sessionData);
-                        toast.success('Google Calendar connected successfully!');
-                      } catch (error) {
-                        console.error('Failed to fetch sessions', error);
-                      }
-                    };
-                    loadSessions();
-                  }
-                }, 1000);
+                // Redirect directly to Google Auth in the main window
+                window.location.href = data.url;
               } catch (e) {
                 toast.error('Failed to start Google authorization. Please login again.');
               }
