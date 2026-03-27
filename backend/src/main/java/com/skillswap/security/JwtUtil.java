@@ -21,7 +21,14 @@ public class JwtUtil {
     private Long expiration;
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        byte[] keyBytes = secret.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        // JJWT 0.12.x requires >= 256 bits (32 bytes) for HS256.
+        // If the configured secret is shorter (e.g. a short env var on Render),
+        // pad it to exactly 32 bytes so the app never crashes with WeakKeyException.
+        if (keyBytes.length < 32) {
+            keyBytes = java.util.Arrays.copyOf(keyBytes, 32);
+        }
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(UserDetails userDetails) {
