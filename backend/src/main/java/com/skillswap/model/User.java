@@ -2,9 +2,8 @@ package com.skillswap.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,12 +29,12 @@ public class User {
     @Column(nullable = false)
     private String year;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "TEXT")
     private List<String> skillsOffered;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "TEXT")
     private List<String> skillsWanted;
 
     @Column(nullable = false)
@@ -74,14 +73,14 @@ public class User {
     public void setYear(String year) { this.year = year; }
 
     public List<String> getSkillsOffered() { 
-        return skillsOffered != null ? skillsOffered : List.of(); 
+        return skillsOffered != null ? skillsOffered : new ArrayList<>(); 
     }
     public void setSkillsOffered(List<String> skillsOffered) { 
         this.skillsOffered = skillsOffered; 
     }
 
     public List<String> getSkillsWanted() { 
-        return skillsWanted != null ? skillsWanted : List.of(); 
+        return skillsWanted != null ? skillsWanted : new ArrayList<>(); 
     }
     public void setSkillsWanted(List<String> skillsWanted) { 
         this.skillsWanted = skillsWanted; 
