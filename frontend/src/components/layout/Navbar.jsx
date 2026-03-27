@@ -33,9 +33,9 @@ const Navbar = () => {
       const trimmed = searchValue.trim();
       const currentQ = new URLSearchParams(location.search).get('q') || '';
       if (trimmed) {
-        if (trimmed !== currentQ) navigate(`/?q=${encodeURIComponent(trimmed)}`);
+        if (trimmed !== currentQ) navigate(`/feed?q=${encodeURIComponent(trimmed)}`);
       } else {
-        if (currentQ) navigate('/');
+        if (currentQ) navigate('/feed');
       }
     }, 250);
 
@@ -43,7 +43,7 @@ const Navbar = () => {
   }, [searchValue, navigate, location.search]);
 
   const navigation = [
-    { name: 'Feed', href: '/', icon: Home },
+    { name: 'Feed', href: '/feed', icon: Home },
     { name: 'Connections', href: '/connections', icon: Users },
     { name: 'Messages', href: '/chat', icon: MessageCircle },
     { name: 'Sessions', href: '/sessions', icon: Calendar },
@@ -63,7 +63,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           {/* Logo and Search */}
           <div className="flex items-center flex-1">
-            <Link to="/" className="flex-shrink-0 flex items-center group">
+            <Link to="/feed" className="flex-shrink-0 flex items-center group">
               <div className="bg-indigo-600 p-1.5 rounded-lg mr-2 group-hover:bg-indigo-700 transition-colors">
                 <Users className="h-6 w-6 text-white" />
               </div>

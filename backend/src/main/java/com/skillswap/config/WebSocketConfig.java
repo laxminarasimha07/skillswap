@@ -28,11 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // SockJS performs an initial HTTP GET to /ws/info. Do NOT use "*" here,
         // otherwise Spring may reject the request when credentials/origin checks apply.
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns(
-                        "http://localhost:5173",
-                        "http://localhost:3000",
-                        "https://your-production-domain.com"
-                )
+                .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
 

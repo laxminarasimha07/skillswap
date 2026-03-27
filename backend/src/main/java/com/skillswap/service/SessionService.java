@@ -39,13 +39,13 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
-    public Session confirmSession(Long sessionId, Long userId, LocalDateTime selectedSlot) {
+    public Session confirmSession(Long sessionId, Long userId) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(() -> new RuntimeException("Session not found"));
         if (!session.getUser1().getId().equals(userId) && !session.getUser2().getId().equals(userId)) {
             throw new RuntimeException("Unauthorized");
         }
 
-        LocalDateTime slotToUse = (selectedSlot != null) ? selectedSlot : session.getStartTime();
+        LocalDateTime slotToUse = session.getStartTime();
 
         session.setStartTime(slotToUse);
         session.setEndTime(slotToUse.plusHours(1));

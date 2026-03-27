@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @RestController
@@ -40,11 +40,9 @@ public class SessionController {
     }
 
     @PutMapping("/{id}/confirm")
-    public ResponseEntity<SessionDTO> confirmSession(
-            @PathVariable Long id, 
-            @RequestParam(required = false) LocalDateTime selectedSlot) {
+    public ResponseEntity<SessionDTO> confirmSession(@PathVariable Long id) {
         Long userId = getCurrentUserId();
-        Session session = sessionService.confirmSession(id, userId, selectedSlot);
+        Session session = sessionService.confirmSession(id, userId);
         return ResponseEntity.ok(new SessionDTO(session));
     }
 
