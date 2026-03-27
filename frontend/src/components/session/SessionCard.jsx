@@ -5,7 +5,10 @@ import { Calendar, Clock, Video, Check, X } from 'lucide-react';
 import { sessionApi } from '../../api/sessionApi';
 import toast from 'react-hot-toast';
 
+import { useAuth } from '../../contexts/AuthContext';
+
 const SessionCard = ({ session, onSessionUpdated }) => {
+  const { user } = useAuth();
   const { id, user1, user2, startTime, endTime, meetLink, status, proposedSlots } = session;
   const [isLoading, setIsLoading] = useState(false);
 
@@ -156,7 +159,7 @@ const SessionCard = ({ session, onSessionUpdated }) => {
       </div>
 
       <div className="mt-6 pt-6 border-t border-gray-100 flex justify-end space-x-3 flex-wrap gap-3">
-        {status === 'PROPOSED' && (
+        {status === 'PROPOSED' && user?.id === user2.id && (
           <>
             <Button 
               variant="secondary" 
@@ -174,6 +177,16 @@ const SessionCard = ({ session, onSessionUpdated }) => {
               <Check className="h-4 w-4 mr-1"/>Accept
             </Button>
           </>
+        )}
+        {status === 'PROPOSED' && user?.id === user1.id && (
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => handleCancel()}
+            disabled={isLoading}
+          >
+            Cancel Request
+          </Button>
         )}
         {status === 'CONFIRMED' && (
           <>

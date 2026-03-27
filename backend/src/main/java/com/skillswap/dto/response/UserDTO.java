@@ -12,6 +12,7 @@ public class UserDTO {
     private List<String> skillsOffered;
     private List<String> skillsWanted;
     private Double rating;
+    private boolean googleConnected;
 
     public UserDTO(User user) {
         this.id = user.getId();
@@ -22,6 +23,7 @@ public class UserDTO {
         this.skillsOffered = user.getSkillsOffered();
         this.skillsWanted = user.getSkillsWanted();
         this.rating = user.getRating();
+        this.googleConnected = user.getGoogleRefreshToken() != null && !user.getGoogleRefreshToken().isBlank();
     }
 
     // Default constructor
@@ -51,4 +53,7 @@ public class UserDTO {
 
     public Double getRating() { return rating; }
     public void setRating(Double rating) { this.rating = rating; }
+
+    public boolean isGoogleConnected() { return googleConnected; }
+    public void setGoogleConnected(boolean googleConnected) { this.googleConnected = googleConnected; }
 }

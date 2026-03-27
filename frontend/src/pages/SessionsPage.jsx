@@ -70,7 +70,7 @@ const SessionsPage = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Scheduled Sessions</h1>
         <div className="flex items-center gap-3">
-          <Button
+          {!user?.googleConnected && <Button
             variant="outline"
             onClick={async () => {
               try {
@@ -82,8 +82,8 @@ const SessionsPage = () => {
               }
             }}
           >
-            Connect Google Calendar
-          </Button>
+             Connect Google Calendar
+          </Button>}
           <Button onClick={() => setIsModalOpen(true)}>Propose Session</Button>
         </div>
       </div>
