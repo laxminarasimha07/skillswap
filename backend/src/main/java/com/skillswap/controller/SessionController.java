@@ -40,7 +40,9 @@ public class SessionController {
     }
 
     @PutMapping("/{id}/confirm")
-    public ResponseEntity<SessionDTO> confirmSession(@PathVariable Long id, @RequestParam LocalDateTime selectedSlot) {
+    public ResponseEntity<SessionDTO> confirmSession(
+            @PathVariable Long id, 
+            @RequestParam(required = false) LocalDateTime selectedSlot) {
         Long userId = getCurrentUserId();
         Session session = sessionService.confirmSession(id, userId, selectedSlot);
         return ResponseEntity.ok(new SessionDTO(session));

@@ -38,6 +38,18 @@ function App() {
 
               <Route path="/home" element={<Navigate to="/" replace />} />
 
+              {/* Public without Navbar */}
+              <Route path="/login" element={
+                <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>}>
+                  <LoginPage />
+                </Suspense>
+              } />
+              <Route path="/register" element={
+                <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>}>
+                  <RegisterPage />
+                </Suspense>
+              } />
+
               {/* All other pages render with navbar */}
               <Route path="*" element={
                 <>
@@ -49,11 +61,8 @@ function App() {
                       </div>
                     }>
                       <Routes>
-                        {/* Public Routes */}
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} />
-
                         {/* Protected Routes */}
+
                         <Route path="/feed" element={
                           <ProtectedRoute>
                             <FeedPage />

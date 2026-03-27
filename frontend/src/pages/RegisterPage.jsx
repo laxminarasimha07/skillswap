@@ -45,7 +45,7 @@ const RegisterPage = () => {
       const response = await authApi.register(formattedData);
       login(response.token, response.user);
       toast.success('Registration successful! Welcome to Skill Swap.');
-      navigate('/');
+      navigate('/feed');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Registration failed');
     } finally {

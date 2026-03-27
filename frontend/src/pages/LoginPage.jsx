@@ -33,7 +33,7 @@ const LoginPage = () => {
       const response = await authApi.login(data);
       login(response.token, response.user);
       toast.success('Welcome back!');
-      navigate('/');
+      navigate('/feed');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
     } finally {

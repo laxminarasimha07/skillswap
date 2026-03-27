@@ -12,7 +12,13 @@ export const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated && user) {
       const client = new Client({
-        webSocketFactory: () => new SockJS(import.meta.env.VITE_WS_URL || 'http://localhost:8080/ws'),
+        webSocketFactory: () => {
+          const isSecure = window.location.protocol === 'https:';
+          const defaultUrl = isSecure 
+            ? 'https://swapskill-backend-3a00.onrender.com/ws' 
+            : 'http://localhost:10000/ws';
+          return new SockJS(import.meta.env.VITE_WS_URL || defaultUrl);
+        },
         connectHeaders: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

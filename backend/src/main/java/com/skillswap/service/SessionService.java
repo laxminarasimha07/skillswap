@@ -45,8 +45,10 @@ public class SessionService {
             throw new RuntimeException("Unauthorized");
         }
 
-        session.setStartTime(selectedSlot);
-        session.setEndTime(selectedSlot.plusHours(1));
+        LocalDateTime slotToUse = (selectedSlot != null) ? selectedSlot : session.getStartTime();
+
+        session.setStartTime(slotToUse);
+        session.setEndTime(slotToUse.plusHours(1));
         session.setStatus(Session.SessionStatus.CONFIRMED);
 
         // Create Meet link in the confirmer's Google account (per-user OAuth).
