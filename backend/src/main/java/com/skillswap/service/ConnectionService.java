@@ -94,7 +94,7 @@ public class ConnectionService {
     }
 
     public List<Connection> getConnectionsForUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return connectionRepository.findAll().stream()
                 .filter(conn -> conn.getSender().getId().equals(userId) || conn.getReceiver().getId().equals(userId))
                 .toList();

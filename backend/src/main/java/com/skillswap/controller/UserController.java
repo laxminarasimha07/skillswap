@@ -1,6 +1,5 @@
 package com.skillswap.controller;
 
-import com.skillswap.dto.request.RegisterRequest;
 import com.skillswap.dto.request.UpdateProfileRequest;
 import com.skillswap.dto.response.UserDTO;
 import com.skillswap.model.User;
