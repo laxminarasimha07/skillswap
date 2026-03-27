@@ -141,8 +141,14 @@ public class GoogleCalendarService {
             String hangoutLink = node.path("hangoutLink").asText(null);
             String eventId = node.path("id").asText(null);
             return new CreateEventResult(hangoutLink, eventId);
+        } catch (org.springframework.web.client.HttpStatusCodeException httpEx) {
+            System.err.println("=== CRITICAL GOOGLE API ERROR ===");
+            System.err.println(httpEx.getResponseBodyAsString());
+            System.err.println("=================================");
+            throw new RuntimeException("Google API HTTP Error: " + httpEx.getResponseBodyAsString());
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create Google Calendar event");
+            System.err.println("Google API System Error: " + e.getMessage());
+            throw new RuntimeException("Failed to create Google Calendar event: " + e.getMessage());
         }
     }
 

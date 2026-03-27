@@ -51,11 +51,17 @@ public class SessionService {
         session.setEndTime(slotToUse.plusHours(1));
         session.setStatus(Session.SessionStatus.CONFIRMED);
 
-        // Create Meet link in the confirmer's Google account (per-user OAuth).
-        User confirmer = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        var created = googleCalendarService.createMeetEvent(confirmer, session);
-        session.setMeetLink(created.meetLink());
-        session.setGoogleEventId(created.eventId());
+        try {
+            // Create Meet link in the confirmer's Google account (per-user OAuth).
+            User confirmer = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+            var created = googleCalendarService.createMeetEvent(confirmer, session);
+            if (created != null) {
+                session.setMeetLink(created.meetLink());
+                session.setGoogleEventId(created.eventId());
+            }
+        } catch (Exception e) {
+            System.err.println("Non-fatal error: Google Calendar integration failed. Session will still be confirmed locally. Reason: " + e.getMessage());
+        }
 
         return sessionRepository.save(session);
     }
