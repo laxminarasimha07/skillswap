@@ -19,7 +19,10 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(loginSchema) });
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(loginSchema),
+  });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -35,22 +38,62 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col justify-center items-center p-6">
-      <Link to="/" className="absolute top-10 left-10">
-        <div className="h-10 w-10 bg-[#111111] rounded-full flex items-center justify-center">
-          <div className="h-4 w-4 bg-white rounded-full" />
+    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center py-12 px-4 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <Link to="/" className="mb-8 flex items-center justify-center p-3 rounded-2xl hover:bg-slate-900 transition-colors z-10 group">
+        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 shadow-lg flex items-center justify-center">
+          <svg viewBox="0 0 16 16" fill="none" className="h-5 w-5">
+            <path d="M3 8l4-5 3 3.5L12 3l1 5-5 5-5-5z" fill="white" />
+          </svg>
         </div>
       </Link>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-[400px]">
-        <h1 className="text-4xl font-bold font-['Manrope'] tracking-tight text-[#111111] mb-2">Welcome back.</h1>
-        <p className="text-[#666666] mb-10 text-lg">Don't have an account? <Link to="/register" className="text-[#111111] underline underline-offset-4 font-semibold hover:text-[#333333]">Sign up</Link></p>
-        
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <Input label="Email address" type="email" placeholder="name@college.edu" {...register('email')} error={errors.email?.message} />
-          <Input label="Password" type="password" placeholder="••••••••" {...register('password')} error={errors.password?.message} />
-          <Button type="submit" className="w-full h-12 text-base" isLoading={isLoading}>Log In</Button>
-        </form>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-[400px] z-10"
+      >
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
+          <p className="text-sm text-slate-400 mt-2">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-emerald-400 font-medium hover:text-emerald-300 transition-colors">
+              Sign up
+            </Link>
+          </p>
+        </div>
+
+        <div className="bg-slate-900 border border-slate-800 rounded-[24px] p-6 sm:p-8 shadow-2xl">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <Input
+              label="Email address"
+              type="email"
+              placeholder="you@college.edu"
+              {...register('email')}
+              error={errors.email?.message}
+            />
+            <div className="space-y-1.5">
+              <Input
+                label="Password"
+                type="password"
+                placeholder="••••••••"
+                {...register('password')}
+                error={errors.password?.message}
+              />
+              <div className="flex justify-end pt-1">
+                <Link to="#" className="text-xs font-medium text-slate-500 hover:text-emerald-400 transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full h-11 text-base mt-2 shadow-[0_4px_14px_0_rgba(16,185,129,0.39)] hover:shadow-[0_6px_20px_rgba(16,185,129,0.23)]" isLoading={isLoading}>
+              Sign In
+            </Button>
+          </form>
+        </div>
       </motion.div>
     </div>
   );

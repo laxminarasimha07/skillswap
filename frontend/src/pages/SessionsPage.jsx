@@ -8,7 +8,7 @@ import { connectionApi } from '../api/connectionApi';
 import { useAuth } from '../contexts/AuthContext';
 import { userApi } from '../api/userApi';
 import axiosInstance from '../api/axiosInstance';
-import { Plus, Link2 } from 'lucide-react';
+import { Plus, Link2, Calendar } from 'lucide-react';
 
 const SessionsPage = () => {
   const { user } = useAuth();
@@ -18,14 +18,9 @@ const SessionsPage = () => {
   const [loading, setLoading] = useState(true);
 
   const loadSessions = async () => {
-    try {
-      const data = await sessionApi.getMySessions();
-      setSessions(data);
-    } catch {
-      toast.error('Failed to load sessions');
-    } finally {
-      setLoading(false);
-    }
+    try { setSessions(await sessionApi.getMySessions()); }
+    catch { toast.error('Failed to load sessions'); }
+    finally { setLoading(false); }
   };
 
   const handlePropose = async (user2Id, slots) => {
@@ -33,9 +28,7 @@ const SessionsPage = () => {
       const res = await sessionApi.proposeSession({ user2Id, proposedSlots: slots });
       setSessions(p => [res, ...p]);
       toast.success('Session proposed');
-    } catch {
-      toast.error('Failed to propose session');
-    }
+    } catch { toast.error('Failed to propose session'); }
   };
 
   useEffect(() => { loadSessions(); }, []);
@@ -57,24 +50,28 @@ const SessionsPage = () => {
   }).sort((a,b) => b.id - a.id);
 
   return (
-    <div className="min-h-screen bg-white pt-10">
-      <div className="max-w-[1000px] mx-auto px-6 sm:px-10 py-12">
+    <div className="min-h-screen bg-slate-950 pt-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 pb-6 border-b border-slate-800">
           <div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold font-['Manrope'] text-[#111111] tracking-tight">Schedule</h1>
-            <p className="text-lg text-[#666666] mt-2">Coordinate your skill exchanges</p>
+            <div className="flex items-center gap-2 mb-2">
+              <Calendar className="h-5 w-5 text-emerald-400" />
+              <span className="text-emerald-400 font-semibold tracking-wide text-sm uppercase">Schedule</span>
+            </div>
+            <h1 className="text-3xl font-bold text-white tracking-tight">Your Sessions</h1>
+            <p className="text-slate-400 mt-2">Manage upcoming learning sessions and requests.</p>
           </div>
           <div className="flex flex-wrap gap-3">
             {!user?.googleConnected && (
-              <Button variant="secondary" onClick={async () => {
+              <Button variant="outline" onClick={async () => {
                 const { data } = await axiosInstance.get('/oauth2/authorize-url');
                 window.location.href = data.url;
-              }}>
-                <Link2 className="h-4 w-4" /> Calendar Sync
+              }} className="bg-slate-900 border-slate-700">
+                <Link2 className="h-4 w-4 text-emerald-400" /> Sync Calendar
               </Button>
             )}
-            <Button onClick={() => setIsModalOpen(true)}>
+            <Button onClick={() => setIsModalOpen(true)} className="shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               <Plus className="h-4 w-4" /> Book Session
             </Button>
           </div>
@@ -82,13 +79,14 @@ const SessionsPage = () => {
 
         {loading ? (
           <div className="space-y-4">
-            {[1,2,3].map(i => <div key={i} className="h-32 rounded-[24px] bg-[#F9F9F9] animate-pulse" />)}
+            {[1,2,3].map(i => <div key={i} className="h-32 rounded-2xl bg-slate-900 border border-slate-800 animate-pulse" />)}
           </div>
         ) : visible.length === 0 ? (
-          <div className="text-center py-32 rounded-[32px] bg-[#F9F9F9] border border-[#E5E5E5] border-dashed">
-            <h3 className="text-xl font-bold text-[#111111] font-['Manrope'] tracking-tight">Your calendar is empty</h3>
-            <p className="text-[#666666] mt-2 mb-8 max-w-sm mx-auto">You have no upcoming or proposed sessions. Connect with peers to start learning.</p>
-            <Button onClick={() => setIsModalOpen(true)}>Book your first session</Button>
+          <div className="text-center py-20 rounded-2xl bg-slate-900/50 border border-dashed border-slate-700">
+            <Calendar className="h-10 w-10 text-slate-600 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-white">Your calendar is clear</h3>
+            <p className="text-slate-400 mt-2 mb-6 max-w-sm mx-auto">You have no upcoming or proposed sessions. Connect with peers to start learning.</p>
+            <Button onClick={() => setIsModalOpen(true)}>Propose a time</Button>
           </div>
         ) : (
           <div className="space-y-4">

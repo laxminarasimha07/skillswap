@@ -1,75 +1,70 @@
 @import "tailwindcss";
 
-/* ── Minimalist Editorial Design System ── */
 :root {
-  --bg-color: #FFFFFF;
-  --bg-surface: #F9F9F9;
-  --text-main: #111111;
-  --text-muted: #666666;
-  --border-color: #E6E6E6;
-  --accent-color: #111111;
+  --base:      #020617; /* slate-950 */
+  --surface:   #0f172a; /* slate-900 */
+  --elevated:  #1e293b; /* slate-800 */
+  --border:    #1e293b;
+  --text:      #e2e8f0; /* slate-200 */
+  --text-dim:  #94a3b8; /* slate-400 */
+  
+  /* Primary Emerald/Green accents */
+  --emerald:   #10b981; 
+  --emerald-d: #059669; /* emerald-600 */
 }
 
-/* ── Global Reset ── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: var(--text-main);
-  background-color: var(--bg-color);
 }
 
 body {
   margin: 0;
-  background-color: var(--bg-color);
-  color: var(--text-main);
+  background-color: var(--base);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
 }
 
 #root {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-/* ── Typography Override ── */
+/* Headings use Poppins */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Manrope', system-ui, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.03em; /* Tighter tracking for display headings */
-  color: var(--text-main);
-  line-height: 1.1;
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 600;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
 }
 
-/* ── Scrollbar Polish ── */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--base);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 10px;
+  background: var(--elevated);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #CCCCCC;
+  background: #334155;
 }
 
-/* ── Form Inputs ── */
+/* Inputs needing dark color-scheme */
 input[type="date"],
-input[type="time"],
-input[type="datetime-local"] {
-  color-scheme: light;
+input[type="time"] {
+  color-scheme: dark;
 }
 
 ::selection {
-  background-color: var(--text-main);
-  color: var(--bg-color);
+  background: rgba(16, 185, 129, 0.3);
+  color: #fff;
 }

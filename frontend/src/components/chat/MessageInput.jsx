@@ -13,22 +13,23 @@ const MessageInput = ({ onSendMessage }) => {
   return (
     <form
       onSubmit={send}
-      className="px-8 py-6 border-t border-[#E5E5E5] bg-white flex gap-3"
+      className="px-6 py-4 border-t border-slate-800 bg-slate-900/50 backdrop-blur-sm flex gap-3"
     >
       <input
         type="text"
         value={msg}
         onChange={e => setMsg(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
-        placeholder="Type a message..."
-        className="flex-1 h-12 px-5 text-[15px] font-medium bg-[#F9F9F9] border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#A3A3A3] focus:outline-none focus:border-[#111111] focus:ring-1 focus:ring-[#111111] transition-all"
+        placeholder="Type your message..."
+        className="flex-1 h-12 px-5 text-sm bg-slate-800 border-none rounded-2xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-inner"
+        autoComplete="off"
       />
       <button
         type="submit"
         disabled={!msg.trim()}
-        className="h-12 w-12 rounded-full bg-[#111111] flex items-center justify-center text-white hover:bg-[#333333] disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
+        className="h-12 w-12 rounded-full bg-emerald-600 flex items-center justify-center text-white hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.3)] shadow-emerald-500/20"
       >
-        <Send className="h-5 w-5 ml-0.5" />
+        <Send className="h-5 w-5 ml-1" />
       </button>
     </form>
   );

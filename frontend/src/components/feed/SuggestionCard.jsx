@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from '../shared/Button';
 import SkillBadge from './SkillBadge';
-import { Star } from 'lucide-react';
+import { UserPlus, Star } from 'lucide-react';
 import { connectionApi } from '../../api/connectionApi';
 import toast from 'react-hot-toast';
 
@@ -16,7 +16,7 @@ const SuggestionCard = ({ suggestion, index = 0 }) => {
     try {
       await connectionApi.sendRequest(user.id);
       setRequested(true);
-      toast.success('Request sent');
+      toast.success('Connection request sent');
     } catch {
       toast.error('Failed to connect');
     } finally {
@@ -24,65 +24,82 @@ const SuggestionCard = ({ suggestion, index = 0 }) => {
     }
   };
 
-  const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+  const initials = user.name?.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
   const matchPct = typeof score === 'number' ? Math.min(score, 100) : score;
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      whileHover={{ y: -4 }}
-      className="group flex flex-col bg-white border border-[#E5E5E5] rounded-[24px] overflow-hidden hover:border-[#111111] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300"
+      className="group relative bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-all shadow-xl hover:shadow-2xl"
     >
-      <div className="p-6 flex-1 space-y-6">
+      <div className="p-5 flex-1 space-y-5">
         
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-[#111111] flex items-center justify-center text-white text-sm font-bold shrink-0">
-            {initials}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-bold font-['Manrope'] text-[#111111] truncate">{user.name}</h3>
-            <p className="text-sm text-[#666666] font-medium">{user.branch} · {user.year}</p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold shadow-lg shrink-0">
+              {initials}
+            </div>
+            <div className="truncate">
+              <h3 className="font-semibold text-slate-100 truncate flex items-center gap-2">
+                {user.name}
+              </h3>
+              <p className="text-xs text-slate-400 font-medium truncate">
+                {user.branch} • Year {user.year}
+              </p>
+            </div>
           </div>
           {user.rating != null && (
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 text-[#111111] fill-[#111111]" />
-              <span className="text-sm font-bold text-[#111111]">{Number(user.rating).toFixed(1)}</span>
+            <div className="flex items-center gap-1 bg-slate-800 px-2 py-1 rounded-md shrink-0">
+              <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
+              <span className="text-xs font-bold text-slate-200">{Number(user.rating).toFixed(1)}</span>
             </div>
           )}
         </div>
 
         {/* Bio */}
         {user.about && (
-          <p className="text-[15px] text-[#333333] line-clamp-2 leading-relaxed">{user.about}</p>
+          <p className="text-[13px] text-slate-300 line-clamp-2 leading-relaxed">{user.about}</p>
         )}
 
-        {/* Skills Layout */}
-        <div className="space-y-4">
+        {/* Skills */}
+        <div className="space-y-3">
           <div>
-            <span className="text-xs font-bold text-[#A3A3A3] uppercase tracking-wider mb-2 block">Teaching</span>
-            <div className="flex flex-wrap gap-2">
-              {user.skillsOffered?.slice(0, 3).map(s => <SkillBadge key={s} skill={s} />)}
-              {user.skillsOffered?.length > 3 && <span className="text-xs text-[#666666] self-center ml-1">+{user.skillsOffered.length - 3}</span>}
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5">Can Teach</span>
+            <div className="flex flex-wrap gap-1.5">
+              {user.skillsOffered?.slice(0, 3).map(s => <SkillBadge key={s} skill={s} type="offer" />)}
+              {user.skillsOffered?.length > 3 && <span className="text-[10px] text-slate-500 font-medium">+{user.skillsOffered.length - 3}</span>}
             </div>
           </div>
           <div>
-             <span className="text-xs font-bold text-[#A3A3A3] uppercase tracking-wider mb-2 block">Learning</span>
-            <div className="flex flex-wrap gap-2">
-              {user.skillsWanted?.slice(0, 3).map(s => <SkillBadge key={s} skill={s} />)}
-              {user.skillsWanted?.length > 3 && <span className="text-xs text-[#666666] self-center ml-1">+{user.skillsWanted.length - 3}</span>}
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5">Wants to Learn</span>
+            <div className="flex flex-wrap gap-1.5">
+              {user.skillsWanted?.slice(0, 3).map(s => <SkillBadge key={s} skill={s} type="want" />)}
+              {user.skillsWanted?.length > 3 && <span className="text-[10px] text-slate-500 font-medium">+{user.skillsWanted.length - 3}</span>}
             </div>
           </div>
         </div>
-
       </div>
 
-      <div className="px-6 py-4 border-t border-[#E5E5E5] bg-[#F9F9F9] flex items-center justify-between">
-        <span className="text-sm font-bold text-[#111111]">{matchPct}% match</span>
-        <Button size="sm" variant={requested ? 'outline' : 'primary'} onClick={handleConnect} isLoading={loading} disabled={requested}>
-          {requested ? 'Sent' : 'Connect'}
+      <div className="px-5 py-3.5 bg-slate-900/50 border-t border-slate-800 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="relative h-2 w-16 bg-slate-800 rounded-full overflow-hidden">
+            <div className="absolute top-0 left-0 h-full bg-emerald-500 rounded-full" style={{ width: `${matchPct}%` }} />
+          </div>
+          <span className="text-[11px] font-bold text-emerald-400">{matchPct}% match</span>
+        </div>
+        
+        <Button 
+          size="sm" 
+          variant={requested ? 'secondary' : 'primary'} 
+          onClick={handleConnect} 
+          isLoading={loading} 
+          disabled={requested} 
+          className="text-xs h-8 px-4 font-semibold"
+        >
+          {requested ? 'Request Sent' : <><UserPlus className="h-3.5 w-3.5" /> Connect</>}
         </Button>
       </div>
     </motion.article>
