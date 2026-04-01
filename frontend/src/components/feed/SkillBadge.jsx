@@ -1,20 +1,12 @@
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 
-const SkillBadge = ({ skill, type = 'offered', className }) => {
-  const variants = {
-    offered: 'bg-green-50 text-green-700 border-green-100',
-    wanted: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+const SkillBadge = ({ skill, type = 'offered' }) => {
+  const styles = {
+    offered: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
+    wanted: 'bg-purple-500/10 text-purple-400 border border-purple-500/20',
   };
-
   return (
-    <span
-      className={twMerge(
-        'px-3 py-1 rounded-full text-sm font-medium border',
-        variants[type],
-        className
-      )}
-    >
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles[type]}`}>
       {skill}
     </span>
   );

@@ -1,311 +1,355 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { motion } from 'framer-motion';
 import Button from '../components/shared/Button';
-import { Users, MessageSquare, Calendar, Zap, Shield, Smartphone } from 'lucide-react';
+import { Users, MessageSquare, Calendar, Zap, Shield, Smartphone, ArrowRight } from 'lucide-react';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   React.useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
+    if (user) navigate('/feed');
   }, [user, navigate]);
 
   const features = [
     {
       icon: Users,
       title: 'Connect with Peers',
-      description: 'Build meaningful connections with students who share your interests and skills. Create a network of like-minded learners in your college.'
+      description: 'Build real connections with students who share your goals and interests.',
+      color: 'from-purple-600 to-purple-400',
     },
     {
       icon: Zap,
       title: 'Skill Exchange',
-      description: 'Offer skills you excel at and learn from others. No monetary transactions required - pure value exchange between peers.'
+      description: 'Offer what you know, learn what you need. Zero cost, pure peer value.',
+      color: 'from-cyan-600 to-cyan-400',
     },
     {
       icon: MessageSquare,
       title: 'Real-time Chat',
-      description: 'Connect instantly with peers through our real-time messaging. Share resources, discuss topics, and build relationships effortlessly.'
+      description: 'Instant messaging to plan sessions and share resources on the go.',
+      color: 'from-emerald-600 to-emerald-400',
     },
     {
       icon: Calendar,
       title: 'Schedule Sessions',
-      description: 'Propose and confirm learning sessions with integrated calendar. Synchronize with Google Calendar for seamless scheduling.'
+      description: 'Propose and confirm learning sessions with Google Calendar sync.',
+      color: 'from-pink-600 to-pink-400',
     },
     {
       icon: Shield,
       title: 'Safe & Secure',
-      description: 'Your data is secure with end-to-end encryption. We prioritize your privacy and safety throughout the platform.'
+      description: 'JWT-secured platform with privacy-first data handling.',
+      color: 'from-orange-600 to-orange-400',
     },
     {
       icon: Smartphone,
       title: 'Always Connected',
-      description: 'Access SkillSwap on desktop, tablet, or mobile. Stay connected with your network wherever you are on campus.'
-    }
+      description: 'Fully responsive — access SkillSwap from any device on campus.',
+      color: 'from-violet-600 to-violet-400',
+    },
   ];
 
-  const stats = [
-    { number: '100+', label: 'Active Users' },
-    { number: '500+', label: 'Connections Made' },
-    { number: '1000+', label: 'Skills Shared' }
+  const steps = [
+    { step: '01', title: 'Create Profile', desc: 'Sign up and list your skills and learning goals.' },
+    { step: '02', title: 'Find Peers', desc: 'Browse matched students with complementary skills.' },
+    { step: '03', title: 'Chat & Plan', desc: 'Message connections and schedule sessions together.' },
+    { step: '04', title: 'Learn & Grow', desc: 'Exchange skills live on Google Meet.' },
+  ];
+
+  const whyList = [
+    'Zero cost — no fees, pure peer exchange',
+    'Peer learning from students in your college',
+    'Flexible scheduling that fits your timetable',
+    'Community driven — built for students, by students',
+    'Secure & private — your data stays yours',
+    'Real results — grow your skills and your network',
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Navigation */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#0B0F19] text-[#E5E7EB]">
+
+      {/* ── Navbar ── */}
+      <nav className="sticky top-0 z-50 border-b border-[#1F2937] bg-[#0B0F19]/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-          <h1 className="text-2xl font-bold text-indigo-600">SkillSwap</h1>
-          <div className="flex gap-4">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/login')}
-            >
-              Login
-            </Button>
-            <Button
-              onClick={() => navigate('/register')}
-            >
-              Sign Up
-            </Button>
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+              <Zap className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-lg font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              SkillSwap
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>Login</Button>
+            <Button size="sm" onClick={() => navigate('/register')}>Get Started</Button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-16 sm:py-24 lg:py-32">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-indigo-500/20 blur-3xl" />
-          <div className="absolute right-0 top-1/2 h-96 w-96 rounded-full bg-purple-500/20 blur-3xl" />
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden py-20 sm:py-28 lg:py-36">
+        {/* Background blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-96 w-96 rounded-full bg-purple-600/15 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl" />
+          <div className="absolute top-1/2 left-0 h-64 w-64 rounded-full bg-emerald-500/8 blur-3xl" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
-              Learn Together.<br />
-              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Grow Together.</span>
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-8"
+          >
+            <Zap className="h-3.5 w-3.5" />
+            Peer-Powered Skill Exchange Platform
+          </motion.div>
+
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-6"
+            style={{ fontFamily: 'Poppins, sans-serif' }}
+          >
+            Swap Skills.{' '}
+            <br className="hidden sm:block" />
+            <span className="bg-gradient-to-r from-purple-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+              Grow Together.
+            </span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-[#9CA3AF] text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
+            SkillSwap connects college students to exchange skills peer-to-peer.
+            Find someone who knows what you want to learn — and teach them what you know.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <Button size="lg" onClick={() => navigate('/register')} className="px-8 group">
+              Get Started Free
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => navigate('/login')} className="px-8">
+              Sign In
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Features ── */}
+      <section className="py-16 sm:py-24 border-t border-[#1F2937]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-14"
+          >
+            <p className="text-purple-400 text-sm font-medium mb-3 uppercase tracking-wider">Everything you need</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#E5E7EB]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              Built for student learners
             </h2>
-            <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-              SkillSwap connects college students to exchange skills, knowledge, and experiences. 
-              Whether you want to learn coding, languages, or design—find peers who are eager to share their expertise.
+            <p className="text-[#6B7280] mt-3 max-w-xl mx-auto">
+              A focused set of tools to find, connect with, and learn from peers in your college community.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                onClick={() => navigate('/register')}
-                className="px-8"
-              >
-                Get Started Free
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('/login')}
-                className="px-8 text-white border-white hover:bg-white/10"
-              >
-                Login
-              </Button>
-            </div>
-          </div>
+          </motion.div>
 
-          {/* Hero Image Placeholder */}
-          <div className="mt-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 p-1 backdrop-blur">
-            <div className="rounded-xl bg-slate-800/50 p-12 flex items-center justify-center min-h-96">
-              <div className="text-center">
-                <Users className="h-24 w-24 text-indigo-400 mx-auto mb-4 opacity-50" />
-                <p className="text-gray-300 text-lg">Community-Driven Learning Platform</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="relative py-12 sm:py-16 border-y border-gray-700">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-            {stats.map((stat, idx) => (
-              <div key={idx} className="text-center">
-                <p className="text-4xl sm:text-5xl font-bold text-indigo-400 mb-2">{stat.number}</p>
-                <p className="text-gray-400 text-lg">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="relative py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Powerful Features for Learners
-            </h3>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Everything you need to find, connect with, and learn from peers in your college community.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {features.map((feature, idx) => {
               const Icon = feature.icon;
               return (
-                <div
+                <motion.div
                   key={idx}
-                  className="group rounded-xl border border-gray-700 bg-gray-800/50 p-8 hover:bg-gray-800/80 hover:border-indigo-500/50 transition-all duration-300"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.07 }}
+                  whileHover={{ scale: 1.02, borderColor: 'rgba(139,92,246,0.3)' }}
+                  className="bg-[#111827] border border-[#1F2937] rounded-2xl p-6 transition-all duration-300 group"
                 >
-                  <div className="rounded-lg bg-indigo-500/10 p-3 w-fit group-hover:bg-indigo-500/20 transition-all duration-300">
-                    <Icon className="h-8 w-8 text-indigo-400" />
+                  <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 shadow-lg`}>
+                    <Icon className="h-5 w-5 text-white" />
                   </div>
-                  <h4 className="mt-4 text-xl font-semibold text-white mb-2">
+                  <h3 className="text-[#E5E7EB] font-semibold mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
                     {feature.title}
-                  </h4>
-                  <p className="text-gray-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
+                  </h3>
+                  <p className="text-[#6B7280] text-sm leading-relaxed">{feature.description}</p>
+                </motion.div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="relative border-t border-gray-700 py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              How SkillSwap Works
-            </h3>
-            <p className="text-gray-400 text-lg">
-              Get started in just a few simple steps
-            </p>
-          </div>
+      {/* ── How It Works ── */}
+      <section className="py-16 sm:py-24 border-t border-[#1F2937]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-14"
+          >
+            <p className="text-cyan-400 text-sm font-medium mb-3 uppercase tracking-wider">How it works</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#E5E7EB]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              Start in 4 simple steps
+            </h2>
+          </motion.div>
 
-          <div className="grid grid-cols-1 gap-12 sm:grid-cols-4">
-            {[
-              { step: 1, title: 'Create Profile', desc: 'Sign up and tell us about your skills and learning goals' },
-              { step: 2, title: 'Find Peers', desc: 'Browse and connect with students who complement your goals' },
-              { step: 3, title: 'Chat & Plan', desc: 'Message peers and schedule learning sessions together' },
-              { step: 4, title: 'Learn & Grow', desc: 'Exchange skills through real-time sessions on Google Meet' }
-            ].map((item, idx) => (
-              <div key={idx} className="relative">
-                <div className="flex flex-col items-center">
-                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-bold text-xl mb-4">
-                    {item.step}
-                  </div>
-                  <h4 className="text-xl font-semibold text-white mb-2 text-center">
-                    {item.title}
-                  </h4>
-                  <p className="text-gray-400 text-center text-sm">
-                    {item.desc}
-                  </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {steps.map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                className="relative text-center"
+              >
+                <div className="text-5xl font-black bg-gradient-to-br from-purple-600/30 to-cyan-500/30 bg-clip-text text-transparent mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                  {item.step}
                 </div>
-                {idx < 3 && (
-                  <div className="hidden sm:block absolute top-8 -right-6 h-1 w-12 bg-gradient-to-r from-indigo-500/50 to-transparent" />
-                )}
-              </div>
+                <div className="h-px w-8 bg-gradient-to-r from-purple-500 to-cyan-500 mx-auto mb-4 rounded-full" />
+                <h4 className="text-[#E5E7EB] font-semibold mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>{item.title}</h4>
+                <p className="text-[#6B7280] text-sm">{item.desc}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Why SkillSwap Section */}
-      <section className="relative border-t border-gray-700 py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* ── Why SkillSwap ── */}
+      <section className="py-16 sm:py-24 border-t border-[#1F2937]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-                Why Choose SkillSwap?
-              </h3>
-              <ul className="space-y-4">
-                {[
-                  'Zero Cost - Exchange skills without paying fees',
-                  'Peer Learning - Learn from students at your college',
-                  'Flexible Scheduling - Sessions that fit your time',
-                  'Community Driven - Built by and for students',
-                  'Secure & Private - Your data is always protected',
-                  'Real Results - Grow your skills and network'
-                ].map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <div className="h-6 w-6 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <div className="h-3 w-3 rounded-full bg-indigo-400" />
-                    </div>
-                    <span className="text-gray-300 text-lg">{item}</span>
-                  </li>
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <p className="text-emerald-400 text-sm font-medium mb-3 uppercase tracking-wider">Why SkillSwap</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-8" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                The smarter way to{' '}
+                <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                  learn on campus
+                </span>
+              </h2>
+              <ul className="space-y-3">
+                {whyList.map((item, idx) => (
+                  <motion.li
+                    key={idx}
+                    initial={{ opacity: 0, x: -12 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: idx * 0.07 }}
+                    className="flex items-start gap-3"
+                  >
+                    <span className="h-5 w-5 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="block h-2 w-2 rounded-full bg-white" />
+                    </span>
+                    <span className="text-[#9CA3AF] text-sm">{item}</span>
+                  </motion.li>
                 ))}
               </ul>
-            </div>
-            <div className="rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 p-1 backdrop-blur">
-              <div className="rounded-xl bg-slate-800/50 p-12 flex items-center justify-center min-h-96">
-                <div className="text-center">
-                  <Zap className="h-24 w-24 text-purple-400 mx-auto mb-4 opacity-50" />
-                  <p className="text-gray-300 text-lg">Accelerate Your Learning</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="relative"
+            >
+              <div className="bg-gradient-to-br from-purple-600/10 to-cyan-500/10 border border-purple-500/20 rounded-2xl p-8">
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { icon: Users, label: 'Skill Matching', color: 'from-purple-600 to-purple-400' },
+                    { icon: MessageSquare, label: 'Real-time Chat', color: 'from-cyan-600 to-cyan-400' },
+                    { icon: Calendar, label: 'Session Booking', color: 'from-emerald-600 to-emerald-400' },
+                    { icon: Zap, label: 'Instant Connect', color: 'from-pink-600 to-pink-400' },
+                  ].map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={idx} className="bg-[#111827] border border-[#1F2937] rounded-xl p-4 flex flex-col items-center gap-2 text-center">
+                        <div className={`h-9 w-9 rounded-lg bg-gradient-to-br ${item.color} flex items-center justify-center`}>
+                          <Icon className="h-4 w-4 text-white" />
+                        </div>
+                        <span className="text-[#9CA3AF] text-xs font-medium">{item.label}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative border-t border-gray-700 py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 p-12 sm:p-16 text-center">
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Ready to Start Learning?
-            </h3>
-            <p className="text-indigo-100 text-lg mb-8 max-w-2xl mx-auto">
-              Join hundreds of students exchanging skills and knowledge through SkillSwap today.
-            </p>
-            <Button
-              size="lg"
-              className="px-8 bg-white text-indigo-600 hover:bg-gray-100"
-              onClick={() => navigate('/register')}
-            >
-              Create Your Free Account
-            </Button>
-          </div>
+      {/* ── CTA ── */}
+      <section className="py-16 sm:py-24 border-t border-[#1F2937]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-2xl border border-purple-500/20 bg-gradient-to-br from-purple-600/10 via-[#111827] to-cyan-500/10 p-10 sm:p-16 text-center"
+          >
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 h-40 w-40 rounded-full bg-purple-600/20 blur-3xl pointer-events-none" />
+            <div className="relative">
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#E5E7EB] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                Ready to start swapping skills?
+              </h2>
+              <p className="text-[#9CA3AF] text-lg mb-8 max-w-xl mx-auto">
+                Join students already exchanging skills and growing together on SkillSwap.
+              </p>
+              <Button size="lg" onClick={() => navigate('/register')} className="px-10 group">
+                Create Your Free Account
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-700 bg-gray-900/50 py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h4 className="text-white font-bold mb-4">SkillSwap</h4>
-              <p className="text-gray-400 text-sm">Connecting peers for mutual learning</p>
+      {/* ── Footer ── */}
+      <footer className="border-t border-[#1F2937] py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded-md bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center">
+                <Zap className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-[#E5E7EB] font-semibold text-sm">SkillSwap</span>
             </div>
-            <div>
-              <h4 className="text-white font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition">Features</a></li>
-                <li><a href="#" className="hover:text-white transition">Security</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-bold mb-4">Community</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition">About</a></li>
-                <li><a href="#" className="hover:text-white transition">Blog</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-bold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition">Privacy</a></li>
-                <li><a href="#" className="hover:text-white transition">Terms</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 pt-8">
-            <p className="text-gray-400 text-sm text-center">
-              © 2025 SkillSwap. All rights reserved. Built with ❤️ for student learning communities.
+            <p className="text-[#4B5563] text-xs text-center">
+              © 2025 SkillSwap · Built with ❤️ for student learning communities
             </p>
+            <div className="flex gap-4 text-xs text-[#4B5563]">
+              <a href="#" className="hover:text-[#9CA3AF] transition-colors">Privacy</a>
+              <a href="#" className="hover:text-[#9CA3AF] transition-colors">Terms</a>
+            </div>
           </div>
         </div>
       </footer>

@@ -1,35 +1,33 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const MessageThread = ({ messages }) => {
   const { user } = useAuth();
-  const endOfMessagesRef = useRef(null);
+  const endRef = React.useRef(null);
 
-  useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  React.useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto">
-      {messages.map(message => (
-        <div
-          key={message.id}
-          className={`flex mb-4 ${
-            message.senderId === user.id ? 'justify-end' : 'justify-start'
-          }`}
-        >
-          <div
-            className={`max-w-lg p-3 rounded-2xl ${
-              message.senderId === user.id
-                ? 'bg-indigo-100 text-gray-900'
-                : 'bg-gray-100 text-gray-900'
-            }`}
-          >
-            {message.message}
+    <div className="flex-1 p-5 overflow-y-auto space-y-3">
+      {messages.map(message => {
+        const isMine = message.senderId === user.id;
+        return (
+          <div key={message.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
+            <div
+              className={`max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                isMine
+                  ? 'bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-br-sm'
+                  : 'bg-[#1F2937] text-[#E5E7EB] rounded-bl-sm'
+              }`}
+            >
+              {message.message}
+            </div>
           </div>
-        </div>
-      ))}
-      <div ref={endOfMessagesRef} />
+        );
+      })}
+      <div ref={endRef} />
     </div>
   );
 };
