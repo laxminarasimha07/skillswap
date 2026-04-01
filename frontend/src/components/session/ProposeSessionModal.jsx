@@ -1,104 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../shared/Button';
-import { X, Users } from 'lucide-react';
+import { X } from 'lucide-react';
+
+const inputCls = 'w-full h-9 px-3 text-sm bg-slate-950 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors';
 
 const ProposeSessionModal = ({ isOpen, onClose, onPropose, connectedUsers = [] }) => {
-  const [selectedUserId, setSelectedUserId] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
+  const [userId, setUserId] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedDate('');
-      setSelectedTime('');
-      setSelectedUserId(connectedUsers[0]?.id ? String(connectedUsers[0].id) : '');
+      setDate(''); setTime('');
+      setUserId(connectedUsers[0]?.id ? String(connectedUsers[0].id) : '');
     }
   }, [isOpen, connectedUsers]);
 
-  const handleSubmit = () => {
-    if (selectedUserId && selectedDate && selectedTime) {
-      const proposedSlot = `${selectedDate}T${selectedTime}:00`;
-      onPropose(Number(selectedUserId), [proposedSlot]);
+  const submit = () => {
+    if (userId && date && time) {
+      onPropose(Number(userId), [`${date}T${time}:00`]);
       onClose();
     }
   };
-
-  const inputCls = 'w-full px-3.5 py-2.5 rounded-xl bg-[#0B0F19] border border-[#374151] text-[#E5E7EB] text-sm focus:outline-none focus:border-purple-500/60 focus:ring-1 focus:ring-purple-500/20 transition-all';
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.92, y: 24, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.92, y: 24, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-[#111827] border border-[#1F2937] rounded-2xl w-full max-w-md p-6 relative shadow-2xl shadow-black/50"
-            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+            className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl shadow-black/50 p-5"
+            onClick={e => e.stopPropagation()}
           >
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-1.5 text-[#4B5563] hover:text-[#E5E7EB] hover:bg-[#1F2937] rounded-lg transition-all"
-            >
-              <X className="h-4 w-4" />
-            </button>
-
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center">
-                <Users className="h-4 w-4 text-white" />
-              </div>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-[#E5E7EB] font-semibold text-base">Propose a Session</h2>
-                <p className="text-[#6B7280] text-xs">Schedule a skill exchange session</p>
+                <h2 className="text-sm font-semibold text-slate-100">Propose a session</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Schedule a skill exchange</p>
               </div>
+              <button onClick={onClose} className="p-1.5 text-slate-500 hover:text-slate-300 hover:bg-slate-800 rounded-lg transition-colors">
+                <X className="h-4 w-4" />
+              </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">With</label>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">With</label>
                 <select
-                  value={selectedUserId}
-                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  value={userId}
+                  onChange={e => setUserId(e.target.value)}
                   className={inputCls}
                   style={{ colorScheme: 'dark' }}
                 >
-                  {connectedUsers.length === 0 ? (
-                    <option value="">No connections yet</option>
-                  ) : (
-                    connectedUsers.map((u) => (
-                      <option key={u.id} value={u.id}>{u.name}</option>
-                    ))
-                  )}
+                  {connectedUsers.length === 0
+                    ? <option value="">No connections yet</option>
+                    : connectedUsers.map(u => <option key={u.id} value={u.id}>{u.name}</option>)
+                  }
                 </select>
               </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">Date</label>
-                <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className={inputCls} />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">Time</label>
-                <input type="time" value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)} className={inputCls} />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">Date</label>
+                  <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5">Time</label>
+                  <input type="time" value={time} onChange={e => setTime(e.target.value)} className={inputCls} />
+                </div>
               </div>
             </div>
 
-            <div className="mt-6 flex gap-3">
+            <div className="flex gap-2 mt-5">
               <Button variant="secondary" onClick={onClose} className="flex-1">Cancel</Button>
               <Button
-                onClick={handleSubmit}
-                disabled={!selectedUserId || !selectedDate || !selectedTime || connectedUsers.length === 0}
+                onClick={submit}
+                disabled={!userId || !date || !time || connectedUsers.length === 0}
                 className="flex-1"
               >
-                Propose Session
+                Propose
               </Button>
             </div>
           </motion.div>

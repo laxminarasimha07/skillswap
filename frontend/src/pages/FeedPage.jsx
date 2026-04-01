@@ -4,38 +4,35 @@ import { useAuth } from '../contexts/AuthContext';
 import { suggestionApi } from '../api/suggestionApi';
 import SuggestionCard from '../components/feed/SuggestionCard';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Sparkles } from 'lucide-react';
+import { Users } from 'lucide-react';
 
-// Skeleton card that matches SuggestionCard layout
-const SkeletonCard = () => (
-  <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5 animate-pulse">
-    <div className="flex items-start gap-3 mb-4">
-      <div className="h-11 w-11 rounded-xl bg-[#1F2937]" />
-      <div className="flex-1 space-y-2">
-        <div className="h-3.5 bg-[#1F2937] rounded-full w-2/3" />
-        <div className="h-3 bg-[#1F2937] rounded-full w-1/3" />
-      </div>
-      <div className="h-6 w-10 bg-[#1F2937] rounded-full" />
-    </div>
-    <div className="space-y-3">
-      <div className="space-y-1.5">
-        <div className="h-2.5 bg-[#1F2937] rounded-full w-1/4" />
-        <div className="flex gap-1.5">
-          <div className="h-5 w-14 bg-[#1F2937] rounded-full" />
-          <div className="h-5 w-16 bg-[#1F2937] rounded-full" />
-        </div>
-      </div>
-      <div className="space-y-1.5">
-        <div className="h-2.5 bg-[#1F2937] rounded-full w-1/4" />
-        <div className="flex gap-1.5">
-          <div className="h-5 w-12 bg-[#1F2937] rounded-full" />
-          <div className="h-5 w-14 bg-[#1F2937] rounded-full" />
-        </div>
+const CardSkeleton = () => (
+  <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4 animate-pulse">
+    <div className="flex items-start gap-3">
+      <div className="h-10 w-10 rounded-lg bg-slate-800 shrink-0" />
+      <div className="flex-1 space-y-2 pt-0.5">
+        <div className="h-3 bg-slate-800 rounded w-2/3" />
+        <div className="h-2.5 bg-slate-800 rounded w-1/3" />
       </div>
     </div>
-    <div className="mt-4 pt-3 border-t border-[#1F2937] flex justify-between">
-      <div className="h-3 w-16 bg-[#1F2937] rounded-full" />
-      <div className="h-6 w-20 bg-[#1F2937] rounded-xl" />
+    <div className="space-y-2">
+      <div className="h-2 bg-slate-800 rounded w-1/4" />
+      <div className="flex gap-1.5">
+        <div className="h-5 w-12 bg-slate-800 rounded-md" />
+        <div className="h-5 w-16 bg-slate-800 rounded-md" />
+        <div className="h-5 w-10 bg-slate-800 rounded-md" />
+      </div>
+    </div>
+    <div className="space-y-2">
+      <div className="h-2 bg-slate-800 rounded w-1/4" />
+      <div className="flex gap-1.5">
+        <div className="h-5 w-14 bg-slate-800 rounded-md" />
+        <div className="h-5 w-10 bg-slate-800 rounded-md" />
+      </div>
+    </div>
+    <div className="pt-2 border-t border-slate-800 flex justify-between">
+      <div className="h-3 w-20 bg-slate-800 rounded" />
+      <div className="h-6 w-16 bg-slate-800 rounded-lg" />
     </div>
   </div>
 );
@@ -43,79 +40,51 @@ const SkeletonCard = () => (
 const FeedPage = () => {
   const { user } = useAuth();
   const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const query = (searchParams.get('q') || '').trim().toLowerCase();
 
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        const data = await suggestionApi.getSuggestions();
-        setSuggestions(data);
-      } catch (error) {
-        console.error('Failed to fetch suggestions:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchSuggestions();
+    suggestionApi.getSuggestions()
+      .then(setSuggestions)
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
   }, []);
 
-  const filteredSuggestions = query.length === 0
-    ? suggestions
-    : suggestions.filter((s) => {
-        const u = s.user;
-        return (
-          u.name?.toLowerCase().includes(query) ||
-          u.skillsOffered?.some(sk => sk.toLowerCase().includes(query)) ||
-          u.skillsWanted?.some(sk => sk.toLowerCase().includes(query))
-        );
-      });
+  const filtered = query
+    ? suggestions.filter(s =>
+        s.user.name?.toLowerCase().includes(query) ||
+        s.user.skillsOffered?.some(sk => sk.toLowerCase().includes(query)) ||
+        s.user.skillsWanted?.some(sk => sk.toLowerCase().includes(query))
+      )
+    : suggestions;
 
   return (
-    <div className="min-h-screen bg-[#0B0F19]">
+    <div className="min-h-[calc(100vh-3.5rem)] bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* Page Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="h-4 w-4 text-purple-400" />
-            <span className="text-purple-400 text-sm font-medium">Skill Matches</span>
-          </div>
-          <h1 className="text-2xl font-bold text-[#E5E7EB] font-[Poppins]">
-            {query ? (
-              <>Results for <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">"{query}"</span></>
-            ) : (
-              <>
-                Hey {user?.name?.split(' ')[0]} 👋,{' '}
-                <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  here's who you can learn from
-                </span>
-              </>
-            )}
+        {/* Header */}
+        <div className="mb-7">
+          <h1 className="text-xl font-semibold text-slate-100 tracking-tight">
+            {query ? `Results for "${query}"` : 'Discover'}
           </h1>
-          {!query && (
-            <p className="text-[#6B7280] text-sm mt-1">
-              Matched based on your skills — connect to start exchanging
-            </p>
-          )}
-        </motion.div>
+          <p className="text-sm text-slate-500 mt-1">
+            {query
+              ? `${filtered.length} student${filtered.length !== 1 ? 's' : ''} matched`
+              : `Skill matches personalized for you, ${user?.name?.split(' ')[0]}`}
+          </p>
+        </div>
 
         {/* Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
           </div>
-        ) : filteredSuggestions.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        ) : filtered.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             <AnimatePresence>
-              {filteredSuggestions.map((suggestion, index) => (
-                <SuggestionCard key={suggestion.user.id} suggestion={suggestion} index={index} />
+              {filtered.map((s, i) => (
+                <SuggestionCard key={s.user.id} suggestion={s} index={i} />
               ))}
             </AnimatePresence>
           </div>
@@ -123,14 +92,16 @@ const FeedPage = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-20 border border-[#1F2937] rounded-2xl bg-[#111827]"
+            className="flex flex-col items-center justify-center py-24 text-center"
           >
-            <div className="h-16 w-16 rounded-2xl bg-[#1F2937] flex items-center justify-center mx-auto mb-4">
-              <Search className="h-7 w-7 text-[#4B5563]" />
+            <div className="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-4">
+              <Users className="h-5 w-5 text-slate-600" />
             </div>
-            <h3 className="text-[#E5E7EB] font-semibold text-lg font-[Poppins]">No matches found</h3>
-            <p className="text-[#6B7280] text-sm mt-2 max-w-xs mx-auto">
-              {query ? `No results for "${query}". Try a different keyword.` : "Complete your profile with skills to get matched."}
+            <p className="text-sm font-medium text-slate-300">
+              {query ? 'No matches found' : 'No suggestions yet'}
+            </p>
+            <p className="text-xs text-slate-600 mt-1 max-w-xs">
+              {query ? `Try a different search term.` : 'Update your skills in your profile to see personalized matches.'}
             </p>
           </motion.div>
         )}

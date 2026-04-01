@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { userApi } from '../api/userApi';
 import Button from '../components/shared/Button';
@@ -6,12 +6,14 @@ import Input from '../components/shared/Input';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { User, Star, Edit2, X, Save } from 'lucide-react';
+import SkillBadge from '../components/feed/SkillBadge';
 
 const ProfilePage = () => {
   const { user, login } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const [form, setForm] = useState({
     name: user?.name || '',
     about: user?.about || '',
     branch: user?.branch || '',
@@ -21,190 +23,137 @@ const ProfilePage = () => {
     password: '',
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const handleChange = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleSave = async () => {
-    setIsLoading(true);
+  const save = async () => {
+    setLoading(true);
     try {
-      const updatePayload = {
-        name: formData.name,
-        about: (formData.about || '').slice(0, 100),
-        branch: formData.branch,
-        year: formData.year,
-        skillsOffered: formData.skillsOffered.split(',').map(s => s.trim()).filter(s => s),
-        skillsWanted: formData.skillsWanted.split(',').map(s => s.trim()).filter(s => s),
+      const payload = {
+        name: form.name,
+        about: form.about.slice(0, 100),
+        branch: form.branch,
+        year: form.year,
+        skillsOffered: form.skillsOffered.split(',').map(s=>s.trim()).filter(Boolean),
+        skillsWanted: form.skillsWanted.split(',').map(s=>s.trim()).filter(Boolean),
       };
 
-      if (formData.password && formData.password.trim().length > 0) {
-        await userApi.updatePassword({ password: formData.password });
-        setFormData(prev => ({ ...prev, password: '' }));
+      if (form.password.trim()) {
+        await userApi.updatePassword({ password: form.password });
+        setForm(p => ({ ...p, password: '' }));
       }
 
-      const updated = await userApi.updateProfile(updatePayload);
-      login(localStorage.getItem('token'), updated);
-      toast.success('Profile updated!');
-      setIsEditing(false);
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update profile');
+      const res = await userApi.updateProfile(payload);
+      login(localStorage.getItem('token'), res);
+      toast.success('Saved');
+      setEditing(false);
+    } catch {
+      toast.error('Failed to update');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const initials = user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  const initials = user?.name?.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
 
   return (
-    <div className="min-h-screen bg-[#0B0F19]">
+    <div className="min-h-[calc(100vh-3.5rem)] bg-slate-950">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <User className="h-4 w-4 text-purple-400" />
-            <span className="text-purple-400 text-sm font-medium">Account</span>
-          </div>
-          <h1 className="text-2xl font-bold text-[#E5E7EB]" style={{ fontFamily: 'Poppins, sans-serif' }}>My Profile</h1>
-        </motion.div>
+        
+        <div className="mb-8">
+          <h1 className="text-xl font-semibold text-slate-100 tracking-tight">Profile</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage your identity and learning goals</p>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="bg-[#111827] border border-[#1F2937] rounded-2xl overflow-hidden"
-        >
-          {/* Banner */}
-          <div className="h-28 bg-gradient-to-r from-purple-600/30 via-cyan-500/20 to-emerald-500/20 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-cyan-500 to-emerald-500 opacity-10" />
-          </div>
-
-          <div className="px-6 pb-6">
-            {/* Avatar + Edit Button row */}
-            <div className="flex justify-between items-end -mt-10 mb-6">
-              <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-500/20 border-4 border-[#111827]">
-                {initials}
-              </div>
-              <Button
-                variant={isEditing ? 'secondary' : 'outline'}
-                size="sm"
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                {isEditing ? <><X className="h-3.5 w-3.5" /> Cancel</> : <><Edit2 className="h-3.5 w-3.5" /> Edit Profile</>}
-              </Button>
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+          {/* Header Block */}
+          <div className="p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-start sm:items-center border-b border-slate-800">
+            <div className="h-20 w-20 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-2xl font-semibold shrink-0">
+              {initials}
             </div>
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-slate-100">{user?.name}</h2>
+              <p className="text-sm text-slate-500 mt-1">{user?.branch} · {user?.year}</p>
+              <div className="flex items-center gap-1 mt-2">
+                <Star className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
+                <span className="text-sm font-medium text-slate-300">{user?.rating?.toFixed(1) || '0.0'}</span>
+                <span className="text-xs text-slate-600 ml-1">avg rating</span>
+              </div>
+            </div>
+            <Button
+              variant={editing ? "secondary" : "outline"}
+              size="sm"
+              onClick={() => setEditing(!editing)}
+              className="shrink-0"
+            >
+              {editing ? <><X className="h-3.5 w-3.5" /> Cancel</> : <><Edit2 className="h-3.5 w-3.5" /> Edit Profile</>}
+            </Button>
+          </div>
 
-            {isEditing ? (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-4"
-              >
-                <Input label="Name" name="name" value={formData.name} onChange={handleInputChange} />
+          <div className="p-6 sm:p-8">
+            {editing ? (
+              <motion.div initial={{opacity:0}} animate={{opacity:1}} className="space-y-4 max-w-xl">
+                <Input label="Name" name="name" value={form.name} onChange={handleChange} />
                 <div>
-                  <label className="block text-sm font-medium text-[#9CA3AF] mb-1.5">About <span className="text-[#4B5563]">(max 100 chars)</span></label>
+                  <label className="block text-xs font-medium text-slate-400 tracking-wide mb-1.5">
+                    About <span className="text-slate-600 font-normal">({form.about.length}/100)</span>
+                  </label>
                   <textarea
-                    name="about"
-                    value={formData.about}
-                    onChange={(e) => setFormData(prev => ({ ...prev, about: e.target.value.slice(0, 100) }))}
-                    maxLength={100}
+                    name="about" value={form.about}
+                    onChange={e => setForm(p=>({...p, about: e.target.value.slice(0,100)}))}
                     rows={3}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0F19] border border-[#1F2937] text-[#E5E7EB] placeholder-[#4B5563] text-sm focus:outline-none focus:border-purple-500/60 focus:ring-1 focus:ring-purple-500/20 transition-all resize-none"
-                    placeholder="Write a short intro about yourself..."
+                    className="w-full text-sm p-3 bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    placeholder="Short bio..."
                   />
-                  <p className="text-right text-xs text-[#4B5563] mt-1">{(formData.about || '').length}/100</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <Input label="Branch" name="branch" value={formData.branch} onChange={handleInputChange} />
-                  <Input label="Year" name="year" value={formData.year} onChange={handleInputChange} />
+                  <Input label="Branch" name="branch" value={form.branch} onChange={handleChange} />
+                  <Input label="Year" name="year" value={form.year} onChange={handleChange} />
                 </div>
-                <Input label="Skills You Offer (comma-separated)" name="skillsOffered" value={formData.skillsOffered} onChange={handleInputChange} placeholder="Java, Python, UI Design" />
-                <Input label="Skills You Want (comma-separated)" name="skillsWanted" value={formData.skillsWanted} onChange={handleInputChange} placeholder="React, AWS, Figma" />
-                <Input label="New Password (Optional)" type="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Leave blank to keep current password" />
-
+                <div className="border-t border-slate-800 my-4 pt-4 space-y-4">
+                  <Input label="Skills you offer" name="skillsOffered" value={form.skillsOffered} onChange={handleChange} hint="Comma separated" />
+                  <Input label="Skills you want" name="skillsWanted" value={form.skillsWanted} onChange={handleChange} hint="Comma separated" />
+                </div>
+                <div className="border-t border-slate-800 my-4 pt-4">
+                  <Input label="Change Password" type="password" name="password" value={form.password} onChange={handleChange} placeholder="Leave blank to keep current" />
+                </div>
                 <div className="flex gap-3 pt-2">
-                  <Button onClick={handleSave} isLoading={isLoading} className="flex-1">
-                    <Save className="h-3.5 w-3.5" /> Save Changes
-                  </Button>
-                  <Button variant="secondary" onClick={() => setIsEditing(false)} className="flex-1">
-                    Cancel
-                  </Button>
+                  <Button onClick={save} isLoading={loading} className="w-24">Save</Button>
+                  <Button variant="ghost" onClick={() => setEditing(false)}>Cancel</Button>
                 </div>
               </motion.div>
             ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-6"
-              >
-                {/* Name & details */}
+              <motion.div initial={{opacity:0}} animate={{opacity:1}} className="space-y-8">
                 <div>
-                  <h2 className="text-xl font-bold text-[#E5E7EB]" style={{ fontFamily: 'Poppins, sans-serif' }}>{user?.name}</h2>
-                  <p className="text-[#6B7280] text-sm mt-0.5">{user?.branch} · {user?.year}</p>
+                  <h3 className="text-sm font-medium text-slate-400 mb-2">About</h3>
                   {user?.about ? (
-                    <p className="mt-3 text-[#9CA3AF] text-sm bg-[#0D1320] border border-[#1F2937] rounded-xl p-4 leading-relaxed">
-                      {user.about}
-                    </p>
+                    <p className="text-sm text-slate-300 leading-relaxed max-w-2xl">{user.about}</p>
                   ) : (
-                    <p className="mt-3 text-[#4B5563] text-sm italic">No "About" yet — click Edit Profile to add one.</p>
+                    <p className="text-sm text-slate-600 italic">No bio provided.</p>
                   )}
                 </div>
 
-                {/* Skills */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid sm:grid-cols-2 gap-8">
                   <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="h-1.5 w-4 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" />
-                      <h3 className="text-[#E5E7EB] text-sm font-semibold">Skills I Offer</h3>
-                    </div>
+                    <h3 className="text-sm font-medium text-slate-400 mb-3">Teaching</h3>
                     <div className="flex flex-wrap gap-2">
-                      {user?.skillsOffered?.map(skill => (
-                        <span key={skill} className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-medium">
-                          {skill}
-                        </span>
-                      ))}
+                      {user?.skillsOffered?.length > 0 
+                        ? user.skillsOffered.map(s => <SkillBadge key={s} skill={s} type="offered" />)
+                        : <span className="text-xs text-slate-600">None listed</span>}
                     </div>
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="h-1.5 w-4 bg-gradient-to-r from-purple-500 to-purple-400 rounded-full" />
-                      <h3 className="text-[#E5E7EB] text-sm font-semibold">Skills I Want</h3>
-                    </div>
+                    <h3 className="text-sm font-medium text-slate-400 mb-3">Learning</h3>
                     <div className="flex flex-wrap gap-2">
-                      {user?.skillsWanted?.map(skill => (
-                        <span key={skill} className="px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-xs font-medium">
-                          {skill}
-                        </span>
-                      ))}
+                      {user?.skillsWanted?.length > 0
+                        ? user.skillsWanted.map(s => <SkillBadge key={s} skill={s} type="wanted" />)
+                        : <span className="text-xs text-slate-600">None listed</span>}
                     </div>
                   </div>
-                </div>
-
-                {/* Stats footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-[#1F2937]">
-                  <div className="flex items-center gap-4">
-                    <div className="text-center">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        <span className="text-[#E5E7EB] font-bold">{user?.rating?.toFixed(1) || '0.0'}</span>
-                      </div>
-                      <span className="text-[#4B5563] text-xs">Rating</span>
-                    </div>
-                  </div>
-                  <p className="text-[#4B5563] text-xs">
-                    Member since {new Date(user?.createdAt || Date.now()).toLocaleDateString('en-IN', { year: 'numeric', month: 'long' })}
-                  </p>
                 </div>
               </motion.div>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

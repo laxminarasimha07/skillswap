@@ -2,89 +2,86 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from '../shared/Button';
 import SkillBadge from './SkillBadge';
-import { Star, UserPlus, Check } from 'lucide-react';
+import { UserPlus, Check, Star } from 'lucide-react';
 import { connectionApi } from '../../api/connectionApi';
 import toast from 'react-hot-toast';
 
+// Deterministic avatar color based on user id
+const AVATAR_COLORS = [
+  'bg-indigo-600', 'bg-violet-600', 'bg-blue-600',
+  'bg-emerald-600', 'bg-rose-600', 'bg-amber-600',
+];
+
 const SuggestionCard = ({ suggestion, index = 0 }) => {
   const { user, score } = suggestion;
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRequested, setIsRequested] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [requested, setRequested] = useState(false);
 
   const handleConnect = async () => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       await connectionApi.sendRequest(user.id);
-      setIsRequested(true);
+      setRequested(true);
       toast.success(`Request sent to ${user.name}`);
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to send request');
+    } catch (e) {
+      toast.error(e.response?.data?.message || 'Failed to send request');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-  const gradients = [
-    'from-purple-600 to-cyan-500',
-    'from-cyan-500 to-emerald-500',
-    'from-emerald-500 to-purple-600',
-    'from-pink-500 to-purple-600',
-    'from-orange-500 to-pink-500',
-  ];
-  const grad = gradients[user.id % gradients.length] || gradients[0];
+  const avatar = AVATAR_COLORS[user.id % AVATAR_COLORS.length];
+  const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+  const matchPct = typeof score === 'number' ? Math.min(score, 100) : score;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
+    <motion.article
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: index * 0.06 }}
-      whileHover={{ scale: 1.02, boxShadow: '0 0 24px rgba(139,92,246,0.15)' }}
-      className="bg-[#111827] border border-[#1F2937] rounded-2xl overflow-hidden flex flex-col cursor-default transition-all duration-300 hover:border-purple-500/30"
+      transition={{ duration: 0.25, delay: index * 0.05 }}
+      whileHover={{ y: -2 }}
+      className="group flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition-all duration-200"
     >
-      {/* Card body */}
-      <div className="p-5 flex-1">
+      <div className="p-4 flex-1 space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
-              {initials}
-            </div>
-            <div className="min-w-0">
-              <h3 className="text-[#E5E7EB] font-semibold text-sm leading-tight truncate">{user.name}</h3>
-              <p className="text-[#6B7280] text-xs mt-0.5">{user.branch} · {user.year}</p>
-              {user.about && (
-                <p className="text-[#6B7280] text-xs mt-1 line-clamp-1">{user.about}</p>
-              )}
-            </div>
+        <div className="flex items-start gap-3">
+          <div className={`h-10 w-10 rounded-lg ${avatar} flex items-center justify-center text-white text-sm font-semibold shrink-0`}>
+            {initials}
           </div>
-          <div className="flex items-center gap-1 bg-yellow-500/10 border border-yellow-500/20 px-2 py-1 rounded-full shrink-0">
-            <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
-            <span className="text-yellow-400 text-xs font-semibold">{user.rating?.toFixed(1)}</span>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-slate-100 truncate leading-tight">{user.name}</h3>
+            <p className="text-xs text-slate-500 mt-0.5">{user.branch} · {user.year}</p>
           </div>
+          {user.rating != null && (
+            <div className="flex items-center gap-1 shrink-0">
+              <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
+              <span className="text-xs font-medium text-slate-400">{Number(user.rating).toFixed(1)}</span>
+            </div>
+          )}
         </div>
 
+        {/* About */}
+        {user.about && (
+          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{user.about}</p>
+        )}
+
         {/* Skills */}
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           <div>
-            <p className="text-[#4B5563] text-xs font-medium uppercase tracking-wider mb-1.5">Offers</p>
+            <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest mb-1.5">Teaches</p>
             <div className="flex flex-wrap gap-1.5">
-              {user.skillsOffered?.slice(0, 3).map(skill => (
-                <SkillBadge key={skill} skill={skill} type="offered" />
-              ))}
+              {user.skillsOffered?.slice(0, 3).map(s => <SkillBadge key={s} skill={s} type="offered" />)}
               {user.skillsOffered?.length > 3 && (
-                <span className="text-[#4B5563] text-xs self-center">+{user.skillsOffered.length - 3}</span>
+                <span className="text-[10px] text-slate-600 self-center">+{user.skillsOffered.length - 3}</span>
               )}
             </div>
           </div>
           <div>
-            <p className="text-[#4B5563] text-xs font-medium uppercase tracking-wider mb-1.5">Wants</p>
+            <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest mb-1.5">Learning</p>
             <div className="flex flex-wrap gap-1.5">
-              {user.skillsWanted?.slice(0, 3).map(skill => (
-                <SkillBadge key={skill} skill={skill} type="wanted" />
-              ))}
+              {user.skillsWanted?.slice(0, 3).map(s => <SkillBadge key={s} skill={s} type="wanted" />)}
               {user.skillsWanted?.length > 3 && (
-                <span className="text-[#4B5563] text-xs self-center">+{user.skillsWanted.length - 3}</span>
+                <span className="text-[10px] text-slate-600 self-center">+{user.skillsWanted.length - 3}</span>
               )}
             </div>
           </div>
@@ -92,28 +89,27 @@ const SuggestionCard = ({ suggestion, index = 0 }) => {
       </div>
 
       {/* Footer */}
-      <div className="px-5 py-3.5 border-t border-[#1F2937] flex items-center justify-between bg-[#0F1724]">
+      <div className="px-4 py-3 border-t border-slate-800 bg-slate-900/50 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="text-[#6B7280] text-xs">Match </span>
-          <span className="text-emerald-400 text-xs font-bold">{score}</span>
+          <div className="h-1.5 w-14 rounded-full bg-slate-800 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-indigo-500 transition-all"
+              style={{ width: `${Math.min(Number(matchPct) || 0, 100)}%` }}
+            />
+          </div>
+          <span className="text-[10px] text-slate-500 font-medium">{matchPct} match</span>
         </div>
         <Button
-          size="sm"
+          size="xs"
+          variant={requested ? 'secondary' : 'primary'}
           onClick={handleConnect}
-          isLoading={isLoading}
-          disabled={isRequested}
-          variant={isRequested ? 'secondary' : 'primary'}
-          className={isRequested ? 'text-xs' : 'text-xs'}
+          isLoading={loading}
+          disabled={requested}
         >
-          {isRequested ? (
-            <><Check className="h-3 w-3" /> Requested</>
-          ) : (
-            <><UserPlus className="h-3 w-3" /> Connect</>
-          )}
+          {requested ? <><Check className="h-3 w-3" />Sent</> : <><UserPlus className="h-3 w-3" />Connect</>}
         </Button>
       </div>
-    </motion.div>
+    </motion.article>
   );
 };
 

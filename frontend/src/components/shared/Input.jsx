@@ -1,33 +1,33 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
-const Input = React.forwardRef(({ label, error, className, ...props }, ref) => {
+const Input = React.forwardRef(({ label, error, hint, className, ...props }, ref) => {
   const id = React.useId();
-
   return (
     <div className="space-y-1.5">
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium text-[#9CA3AF]">
+        <label htmlFor={id} className="block text-xs font-medium text-slate-400 tracking-wide">
           {label}
         </label>
       )}
-      <div className="relative">
-        <input
-          id={id}
-          ref={ref}
-          className={twMerge(
-            'block w-full px-3.5 py-2.5 rounded-xl border bg-[#111827] text-[#E5E7EB] placeholder-[#4B5563] transition-all duration-200 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed',
-            error
-              ? 'border-red-500/60 focus:border-red-500 focus:ring-red-500/20'
-              : 'border-[#1F2937] focus:border-purple-500/60 focus:ring-purple-500/20',
-            className
-          )}
-          {...props}
-        />
-      </div>
-      {error && (
-        <p className="text-sm text-red-400">{error}</p>
-      )}
+      <input
+        id={id}
+        ref={ref}
+        className={twMerge(
+          'block w-full h-9 px-3 rounded-lg text-sm',
+          'bg-slate-900 border text-slate-100 placeholder-slate-600',
+          'transition-colors duration-150',
+          'focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500',
+          'disabled:opacity-40 disabled:cursor-not-allowed',
+          error
+            ? 'border-red-500/60 focus:ring-red-500/60'
+            : 'border-slate-700 hover:border-slate-600',
+          className
+        )}
+        {...props}
+      />
+      {hint && !error && <p className="text-xs text-slate-500">{hint}</p>}
+      {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
   );
 });

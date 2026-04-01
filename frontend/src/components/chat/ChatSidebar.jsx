@@ -1,42 +1,42 @@
 import React from 'react';
 
 const ChatSidebar = ({ connections, activeConnection, setActiveConnection }) => {
+  const COLORS = ['bg-indigo-600','bg-violet-600','bg-blue-600','bg-emerald-600','bg-rose-600'];
+
   return (
-    <div className="w-72 shrink-0 bg-[#0D1320] border-r border-[#1F2937] flex flex-col">
-      <div className="p-4 border-b border-[#1F2937]">
-        <h2 className="text-base font-semibold text-[#E5E7EB]">Messages</h2>
-        <p className="text-xs text-[#4B5563] mt-0.5">{connections.length} connection{connections.length !== 1 ? 's' : ''}</p>
+    <div className="w-64 shrink-0 flex flex-col border-r border-slate-800 bg-slate-950">
+      <div className="px-4 py-3.5 border-b border-slate-800">
+        <h2 className="text-sm font-semibold text-slate-100">Messages</h2>
+        <p className="text-xs text-slate-500 mt-0.5">{connections.length} conversation{connections.length !== 1 ? 's' : ''}</p>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto py-1">
         {connections.length === 0 ? (
-          <div className="p-6 text-center text-[#4B5563] text-sm">No connections yet</div>
-        ) : (
-          connections.map(connection => {
-            const isActive = activeConnection?.id === connection.id;
-            const initials = connection.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-            return (
-              <div
-                key={connection.id}
-                onClick={() => setActiveConnection(connection)}
-                className={`flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all duration-150 border-l-2 ${
-                  isActive
-                    ? 'bg-purple-600/10 border-l-purple-500'
-                    : 'border-l-transparent hover:bg-[#111827]'
-                }`}
-              >
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                  {initials}
-                </div>
-                <div className="min-w-0">
-                  <p className={`text-sm font-medium truncate ${isActive ? 'text-white' : 'text-[#E5E7EB]'}`}>
-                    {connection.name}
-                  </p>
-                  <p className="text-xs text-[#4B5563] truncate">{connection.branch} · {connection.year}</p>
-                </div>
+          <div className="px-4 py-8 text-center">
+            <p className="text-xs text-slate-600">No connections yet</p>
+          </div>
+        ) : connections.map(conn => {
+          const active = activeConnection?.id === conn.id;
+          const initials = conn.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+          const color = COLORS[conn.id % COLORS.length];
+          return (
+            <button
+              key={conn.id}
+              onClick={() => setActiveConnection(conn)}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
+                active ? 'bg-indigo-500/10' : 'hover:bg-slate-900'
+              }`}
+            >
+              <div className={`h-8 w-8 rounded-lg ${color} flex items-center justify-center text-white text-xs font-semibold shrink-0`}>
+                {initials}
               </div>
-            );
-          })
-        )}
+              <div className="min-w-0">
+                <p className={`text-sm font-medium truncate ${active ? 'text-indigo-300' : 'text-slate-300'}`}>{conn.name}</p>
+                <p className="text-xs text-slate-600 truncate">{conn.branch}{conn.year ? ` · ${conn.year}` : ''}</p>
+              </div>
+              {active && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
