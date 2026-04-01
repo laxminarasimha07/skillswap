@@ -11,7 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,6 +50,17 @@ public class UserController {
 
         userRepository.save(user);
         return ResponseEntity.ok(new UserDTO(user));
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> request) {
+        User user = getCurrentUser();
+        if (request.containsKey("password") && !request.get("password").trim().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.get("password")));
+            userRepository.save(user);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().body("Password cannot be empty");
     }
 
     @GetMapping("/{id}")

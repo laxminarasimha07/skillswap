@@ -19,6 +19,7 @@ const ProfilePage = () => {
     year: user?.year || '',
     skillsOffered: user?.skillsOffered?.join(', ') || '',
     skillsWanted: user?.skillsWanted?.join(', ') || '',
+    password: '',
   });
 
   useEffect(() => {
@@ -55,6 +56,12 @@ const ProfilePage = () => {
         skillsOffered: formData.skillsOffered.split(',').map(s => s.trim()).filter(s => s),
         skillsWanted: formData.skillsWanted.split(',').map(s => s.trim()).filter(s => s),
       };
+      
+      if (formData.password && formData.password.trim().length > 0) {
+        await userApi.updatePassword({ password: formData.password });
+        setFormData(prev => ({ ...prev, password: '' }));
+      }
+      
       const updated = await userApi.updateProfile(updatePayload);
       login(localStorage.getItem('token'), updated);
       toast.success('Profile updated successfully!');
@@ -140,6 +147,14 @@ const ProfilePage = () => {
                 onChange={handleInputChange}
                 placeholder="React, AWS, Figma"
               />
+              <Input
+                label="New Password (Optional)"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Leave blank to keep current"
+              />
               <div className="flex gap-3 pt-4">
                 <Button 
                   onClick={handleSave} 
@@ -201,25 +216,6 @@ const ProfilePage = () => {
                     ))}
                   </div>
                 </section>
-              </div>
-
-              <div className="pt-6 border-t border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Connected people</h3>
-                {connectedUsers.length === 0 ? (
-                  <p className="text-sm text-gray-500">No connections yet.</p>
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {connectedUsers.map((u) => (
-                      <span
-                        key={u.id}
-                        className="px-3 py-1 bg-gray-50 text-gray-800 rounded-full text-sm font-medium border border-gray-100"
-                        title={u.about || ''}
-                      >
-                        {u.name}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
 
               <div className="pt-6 border-t border-gray-100 flex items-center justify-between">

@@ -63,7 +63,7 @@ const SessionsPage = () => {
     if (!session.endTime) return true;
     const end = new Date(session.endTime);
     return !Number.isNaN(end.valueOf()) && end > now;
-  });
+  }).sort((a, b) => b.id - a.id);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

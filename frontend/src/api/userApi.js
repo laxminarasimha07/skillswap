@@ -9,6 +9,10 @@ export const userApi = {
     const response = await axiosInstance.put('/users/me', payload);
     return response.data;
   },
+  updatePassword: async (payload) => {
+    const response = await axiosInstance.put('/users/me/password', payload);
+    return response.data;
+  },
   getUserById: async (id) => {
     const response = await axiosInstance.get(`/users/${id}`);
     return response.data;

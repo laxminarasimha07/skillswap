@@ -84,7 +84,7 @@ public class AuthService {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
 
         final User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have an account please register first"));
 
         log.info("LOGIN: generating token for {}", loginRequest.getEmail());
         final String token = jwtUtil.generateToken(userDetails);
