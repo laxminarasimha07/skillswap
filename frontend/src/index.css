@@ -1,62 +1,75 @@
 @import "tailwindcss";
 
-/* ── Design System ── */
+/* ── Minimalist Editorial Design System ── */
 :root {
-  --base:        #020617;   /* slate-950 */
-  --surface:     #0f172a;   /* slate-900 */
-  --elevated:    #1e293b;   /* slate-800 */
-  --border:      #1e293b;
-  --border-sub:  #0f172a;
-  --text:        #e2e8f0;   /* slate-200 */
-  --text-muted:  #94a3b8;   /* slate-400 */
-  --text-subtle: #475569;   /* slate-600 */
-  --accent:      #6366f1;   /* indigo-500 */
-  --accent-h:    #4f46e5;   /* indigo-600 */
-  --accent-s:    rgba(99,102,241,0.10);
-  --accent-b:    rgba(99,102,241,0.25);
-  --violet:      #8b5cf6;
-  --emerald:     #10b981;
+  --bg-color: #FFFFFF;
+  --bg-surface: #F9F9F9;
+  --text-main: #111111;
+  --text-muted: #666666;
+  --border-color: #E6E6E6;
+  --accent-color: #111111;
 }
 
-/* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* ── Global Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-color);
+}
 
 body {
   margin: 0;
-  background-color: var(--base);
-  color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 #root {
   min-height: 100vh;
-  background-color: var(--base);
+  display: flex;
+  flex-direction: column;
 }
 
+/* ── Typography Override ── */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: #f1f5f9;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em; /* Tighter tracking for display headings */
+  color: var(--text-main);
+  line-height: 1.1;
 }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #334155; }
+/* ── Scrollbar Polish ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #CCCCCC;
+}
 
-/* ── Date/time dark fix ── */
+/* ── Form Inputs ── */
 input[type="date"],
 input[type="time"],
-input[type="datetime-local"] { color-scheme: dark; }
+input[type="datetime-local"] {
+  color-scheme: light;
+}
 
-/* ── Selection ── */
 ::selection {
-  background: rgba(99,102,241,0.3);
-  color: #e2e8f0;
+  background-color: var(--text-main);
+  color: var(--bg-color);
 }

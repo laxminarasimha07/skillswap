@@ -2,162 +2,113 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, MessageCircle, Users, Calendar, User, LogOut, Menu, X, Search } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  React.useEffect(() => {
-    const p = new URLSearchParams(location.search);
-    setSearchValue(p.get('q') || '');
-  }, [location.search]);
-
-  React.useEffect(() => {
-    const t = setTimeout(() => {
-      const q = searchValue.trim();
-      const cur = new URLSearchParams(location.search).get('q') || '';
-      if (q) { if (q !== cur) navigate(`/feed?q=${encodeURIComponent(q)}`); }
-      else { if (cur) navigate('/feed'); }
-    }, 300);
-    return () => clearTimeout(t);
-  }, [searchValue, navigate, location.search]);
-
-  const nav = [
-    { name: 'Feed',        href: '/feed',        icon: Home },
-    { name: 'Connections', href: '/connections',  icon: Users },
-    { name: 'Messages',    href: '/chat',         icon: MessageCircle },
-    { name: 'Sessions',    href: '/sessions',     icon: Calendar },
-    { name: 'Profile',     href: '/profile',      icon: User },
+  const navigation = [
+    { name: 'Feed', href: '/feed' },
+    { name: 'Network', href: '/connections' },
+    { name: 'Messages', href: '/chat' },
+    { name: 'Schedule', href: '/sessions' },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   if (!isAuthenticated) return null;
 
-  const initials = user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/90 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-14 gap-4">
-
-          {/* Logo */}
-          <Link to="/feed" className="flex items-center gap-2 shrink-0 mr-2">
-            <div className="h-6 w-6 rounded-md bg-indigo-600 flex items-center justify-center">
-              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
-                <path d="M3 8l4-5 3 3.5L12 3l1 5-5 5-5-5z" fill="white" />
-              </svg>
-            </div>
-            <span className="text-sm font-semibold text-slate-100 tracking-tight hidden sm:block">SkillSwap</span>
-          </Link>
-
-          {/* Search */}
-          <div className="flex-1 max-w-xs hidden sm:flex">
-            <div className="relative w-full">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search…"
-                value={searchValue}
-                onChange={e => setSearchValue(e.target.value)}
-                className="w-full h-8 pl-8 pr-3 text-sm bg-slate-900 border border-slate-800 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-              />
-            </div>
+    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[#E5E5E5]">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/feed" className="flex items-center gap-3">
+          <div className="h-8 w-8 bg-[#111111] rounded-full flex items-center justify-center">
+            <div className="h-3 w-3 bg-white rounded-full" />
           </div>
+          <span className="text-xl font-bold tracking-tight text-[#111111] font-['Manrope']">SkillSwap</span>
+        </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden sm:flex items-center gap-0.5 ml-auto mr-2">
-            {nav.map(item => {
-              const active = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center gap-1.5 px-3 h-8 rounded-md text-sm font-medium transition-colors ${
-                    active
-                      ? 'text-indigo-400 bg-indigo-500/10'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                  }`}
-                >
-                  <item.icon className="h-3.5 w-3.5" />
-                  <span className="hidden lg:block">{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Avatar + logout */}
-          <div className="flex items-center gap-2 ml-auto sm:ml-0">
-            <div className="h-7 w-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-semibold shrink-0">
-              {initials}
-            </div>
-            <button
-              onClick={() => { logout(); navigate('/login'); }}
-              className="hidden sm:flex items-center gap-1 h-7 px-2 text-xs text-slate-500 hover:text-red-400 hover:bg-red-500/8 rounded-md transition-colors"
-              title="Logout"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-            </button>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="sm:hidden p-1.5 text-slate-400 hover:text-slate-200 rounded-md transition-colors"
-            >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
+        {/* Desktop Links */}
+        <div className="hidden lg:flex items-center gap-1 bg-[#F9F9F9] p-1.5 rounded-full border border-[#E5E5E5]">
+          {navigation.map((item) => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`px-5 py-2 rounded-full text-[13px] font-semibold transition-all duration-200 ${
+                  isActive 
+                    ? 'bg-white text-[#111111] shadow-sm ring-1 ring-[#E5E5E5]' 
+                    : 'text-[#666666] hover:text-[#111111] hover:bg-white/50'
+                }`}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
         </div>
+
+        {/* User Actions */}
+        <div className="hidden lg:flex items-center gap-6">
+          <Link to="/profile" className="text-sm font-semibold text-[#111111] hover:text-[#666666] transition-colors">
+            Profile <ArrowUpRight className="inline-block h-3.5 w-3.5 mb-0.5" />
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="text-sm font-semibold text-[#666666] hover:text-[#111111] transition-colors"
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* Mobile Toggle */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="lg:hidden p-2 -mr-2 text-[#111111]"
+        >
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       <AnimatePresence>
-        {mobileOpen && (
+        {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-            className="sm:hidden border-t border-slate-800 bg-slate-950 px-4 py-3 space-y-0.5"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="lg:hidden border-t border-[#E5E5E5] bg-white overflow-hidden"
           >
-            {/* Mobile search */}
-            <div className="relative mb-3">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
-              <input
-                type="text"
-                placeholder="Search…"
-                value={searchValue}
-                onChange={e => setSearchValue(e.target.value)}
-                className="w-full h-9 pl-8 pr-3 text-sm bg-slate-900 border border-slate-800 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              />
-            </div>
-            {nav.map(item => {
-              const active = location.pathname === item.href;
-              return (
+            <div className="flex flex-col px-6 py-4 space-y-4">
+              {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    active ? 'text-indigo-400 bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-2xl font-bold text-[#111111] font-['Manrope'] tracking-tight hover:text-[#666666]"
                 >
-                  <item.icon className="h-4 w-4" />
                   {item.name}
                 </Link>
-              );
-            })}
-            <button
-              onClick={() => { logout(); navigate('/login'); }}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/8 transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign out
-            </button>
+              ))}
+              <hr className="border-[#E5E5E5]" />
+              <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-[#111111]">
+                Profile
+              </Link>
+              <button onClick={handleLogout} className="text-lg font-semibold text-[#111111] text-left">
+                Logout
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </nav>
   );
 };
 

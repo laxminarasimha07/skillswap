@@ -8,7 +8,6 @@ import { connectionApi } from '../api/connectionApi';
 import { useAuth } from '../contexts/AuthContext';
 import { userApi } from '../api/userApi';
 import axiosInstance from '../api/axiosInstance';
-import { motion } from 'framer-motion';
 import { Plus, Link2 } from 'lucide-react';
 
 const SessionsPage = () => {
@@ -58,44 +57,42 @@ const SessionsPage = () => {
   }).sort((a,b) => b.id - a.id);
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] bg-slate-950">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-white pt-10">
+      <div className="max-w-[1000px] mx-auto px-6 sm:px-10 py-12">
         
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
           <div>
-            <h1 className="text-xl font-semibold text-slate-100 tracking-tight">Sessions</h1>
-            <p className="text-sm text-slate-500 mt-1">Manage your upcoming skill exchanges</p>
+            <h1 className="text-4xl sm:text-5xl font-extrabold font-['Manrope'] text-[#111111] tracking-tight">Schedule</h1>
+            <p className="text-lg text-[#666666] mt-2">Coordinate your skill exchanges</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-3">
             {!user?.googleConnected && (
-              <Button variant="secondary" size="sm" onClick={async () => {
+              <Button variant="secondary" onClick={async () => {
                 const { data } = await axiosInstance.get('/oauth2/authorize-url');
                 window.location.href = data.url;
               }}>
-                <Link2 className="h-3.5 w-3.5" /> Sync Calendar
+                <Link2 className="h-4 w-4" /> Calendar Sync
               </Button>
             )}
-            <Button size="sm" onClick={() => setIsModalOpen(true)}>
-              <Plus className="h-3.5 w-3.5" /> Propose
+            <Button onClick={() => setIsModalOpen(true)}>
+              <Plus className="h-4 w-4" /> Book Session
             </Button>
           </div>
         </div>
 
         {loading ? (
-          <div className="space-y-3">
-            {[1,2,3].map(i => <div key={i} className="h-32 rounded-xl bg-slate-900 border border-slate-800 animate-pulse" />)}
+          <div className="space-y-4">
+            {[1,2,3].map(i => <div key={i} className="h-32 rounded-[24px] bg-[#F9F9F9] animate-pulse" />)}
           </div>
         ) : visible.length === 0 ? (
-          <div className="text-center py-20 border border-slate-800 border-dashed rounded-2xl">
-            <p className="text-sm font-medium text-slate-300">No active sessions</p>
-            <p className="text-xs text-slate-500 mt-1 mb-4">You have no upcoming or proposed sessions.</p>
-            <Button size="sm" variant="secondary" onClick={() => setIsModalOpen(true)}>
-              Propose session
-            </Button>
+          <div className="text-center py-32 rounded-[32px] bg-[#F9F9F9] border border-[#E5E5E5] border-dashed">
+            <h3 className="text-xl font-bold text-[#111111] font-['Manrope'] tracking-tight">Your calendar is empty</h3>
+            <p className="text-[#666666] mt-2 mb-8 max-w-sm mx-auto">You have no upcoming or proposed sessions. Connect with peers to start learning.</p>
+            <Button onClick={() => setIsModalOpen(true)}>Book your first session</Button>
           </div>
         ) : (
-          <div className="space-y-3">
-            {visible.map((s,i) => (
+          <div className="space-y-4">
+            {visible.map((s) => (
               <SessionCard key={s.id} session={s} onSessionUpdated={loadSessions} />
             ))}
           </div>

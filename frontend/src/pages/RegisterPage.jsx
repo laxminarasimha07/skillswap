@@ -24,10 +24,7 @@ const RegisterPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(registerSchema),
-  });
+  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(registerSchema) });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -39,74 +36,41 @@ const RegisterPage = () => {
       };
       const res = await authApi.register(formatted);
       login(res.token, res.user);
-      toast.success('Account created successfully');
       navigate('/feed');
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Registration failed');
+    } catch {
+      toast.error('Registration failed');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center py-12 px-4">
-      <Link to="/" className="mb-6 flex items-center justify-center p-3 rounded-xl hover:bg-slate-900 transition-colors group">
-        <div className="h-8 w-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center group-hover:bg-slate-700 transition-colors">
-          <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4">
-            <path d="M3 8l4-5 3 3.5L12 3l1 5-5 5-5-5z" fill="white" />
-          </svg>
+    <div className="min-h-screen bg-white flex flex-col justify-center items-center py-20 px-6">
+      <Link to="/" className="absolute top-10 left-10 hidden sm:block">
+        <div className="h-10 w-10 bg-[#111111] rounded-full flex items-center justify-center">
+          <div className="h-4 w-4 bg-white rounded-full" />
         </div>
       </Link>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="w-full max-w-[440px]"
-      >
-        <div className="mb-6 text-center">
-          <h1 className="text-xl font-semibold text-white tracking-tight">Create your account</h1>
-          <p className="text-sm text-slate-400 mt-2">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 hover:underline">
-              Log in
-            </Link>
-          </p>
-        </div>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-[500px]">
+        <h1 className="text-4xl font-bold font-['Manrope'] tracking-tight text-[#111111] mb-2">Join the network.</h1>
+        <p className="text-[#666666] mb-10 text-lg">Already a member? <Link to="/login" className="text-[#111111] underline underline-offset-4 font-semibold hover:text-[#333333]">Log in</Link></p>
+        
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Input label="Full Name" placeholder="Jane Doe" {...register('name')} error={errors.name?.message} />
+          <Input label="College Email" type="email" placeholder="jane@college.edu" {...register('email')} error={errors.email?.message} />
+          <Input label="Password" type="password" placeholder="••••••••" {...register('password')} error={errors.password?.message} />
+          
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="Branch" placeholder="CS, Art, etc." {...register('branch')} error={errors.branch?.message} />
+            <Input label="Year" placeholder="Sophomore" {...register('year')} error={errors.year?.message} />
+          </div>
 
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-xl">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Input label="Full Name" placeholder="Jane Doe" {...register('name')} error={errors.name?.message} />
-            <Input label="Email address" type="email" placeholder="jane@college.edu" {...register('email')} error={errors.email?.message} />
-            <Input label="Password" type="password" placeholder="••••••••" {...register('password')} error={errors.password?.message} />
+          <Input label="I can teach..." placeholder="e.g. Python, Calculus, Guitar" {...register('skillsOffered')} error={errors.skillsOffered?.message} />
+          <Input label="I want to learn..." placeholder="e.g. French, React, Baking" {...register('skillsWanted')} error={errors.skillsWanted?.message} />
 
-            <div className="grid grid-cols-2 gap-4">
-              <Input label="Branch" placeholder="CS, EE, etc." {...register('branch')} error={errors.branch?.message} />
-              <Input label="Year" placeholder="Freshman, Senior" {...register('year')} error={errors.year?.message} />
-            </div>
-
-            <div className="space-y-4 pt-2">
-              <Input
-                label="Skills you can teach"
-                placeholder="Python, React, Guitar..."
-                hint="Comma separated"
-                {...register('skillsOffered')}
-                error={errors.skillsOffered?.message}
-              />
-              <Input
-                label="Skills you want to learn"
-                placeholder="Machine Learning, French..."
-                hint="Comma separated"
-                {...register('skillsWanted')}
-                error={errors.skillsWanted?.message}
-              />
-            </div>
-
-            <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
-              Create account
-            </Button>
-          </form>
-        </div>
+          <Button type="submit" className="w-full h-12 text-base mt-2" isLoading={isLoading}>Create Account</Button>
+        </form>
       </motion.div>
     </div>
   );

@@ -27,7 +27,6 @@ const ChatPage = () => {
         id,
         name: peers[i]?.name || `User #${id}`,
         branch: peers[i]?.branch || '',
-        year: peers[i]?.year || ''
       }));
       setConnections(maps);
     });
@@ -38,7 +37,6 @@ const ChatPage = () => {
     setLoading(true);
     messageApi.getChatHistory(active.id)
       .then(setMessages)
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [active]);
 
@@ -69,29 +67,19 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex bg-slate-950">
-      <ChatSidebar
-        connections={connections}
-        activeConnection={active}
-        setActiveConnection={setActive}
-      />
-      <div className="flex-1 flex flex-col min-w-0 bg-slate-950">
+    <div className="h-[calc(100vh-81px)] flex bg-white font-['Inter']"> {/* Account for 80px sticky header */}
+      <ChatSidebar connections={connections} activeConnection={active} setActiveConnection={setActive} />
+      <div className="flex-1 flex flex-col min-w-0 bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.02)] z-10">
         {active ? (
           <>
-            {/* Header */}
-            <div className="h-14 px-5 border-b border-slate-800 flex items-center shrink-0">
-              <div>
-                <h2 className="text-sm font-medium text-slate-200">{active.name}</h2>
-                {active.branch && <p className="text-xs text-slate-500">{active.branch} • {active.year}</p>}
-              </div>
+            <div className="h-20 px-8 border-b border-[#E5E5E5] flex flex-col justify-center shrink-0">
+              <h2 className="text-xl font-bold font-['Manrope'] text-[#111111] tracking-tight">{active.name}</h2>
+              <p className="text-[13px] font-medium text-[#666666]">{active.branch}</p>
             </div>
-
+            
             {loading ? (
               <div className="flex-1 flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
+                <div className="h-4 w-4 rounded-full bg-[#111111] animate-ping" />
               </div>
             ) : (
               <MessageThread messages={messages} />
@@ -100,12 +88,12 @@ const ChatPage = () => {
             <MessageInput onSendMessage={send} />
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-            <div className="h-12 w-12 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-center mb-4">
-              <MessageSquare className="h-5 w-5 text-slate-600" />
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#F9F9F9]">
+            <div className="h-16 w-16 mb-6 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center">
+              <MessageSquare className="h-6 w-6 text-[#111111]" />
             </div>
-            <h3 className="text-sm font-medium text-slate-300">Your Messages</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-xs">Select a conversation from the sidebar or start a new one to chat with your peers.</p>
+            <h3 className="text-xl font-bold text-[#111111] font-['Manrope'] tracking-tight">Select a conversation</h3>
+            <p className="text-sm font-medium text-[#666666] mt-2 max-w-xs">Connecting with your peers enables structured peer-to-peer knowledge transfer.</p>
           </div>
         )}
       </div>

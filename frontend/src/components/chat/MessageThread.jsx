@@ -10,10 +10,10 @@ const MessageThread = ({ messages }) => {
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
+    <div className="flex-1 overflow-y-auto px-8 py-8 space-y-6">
       {messages.length === 0 && (
         <div className="flex items-center justify-center h-full">
-          <p className="text-xs text-slate-600">No messages yet. Say hello!</p>
+          <p className="text-sm font-medium text-[#A3A3A3]">Start the conversation</p>
         </div>
       )}
       {messages.map(msg => {
@@ -21,10 +21,10 @@ const MessageThread = ({ messages }) => {
         return (
           <div key={msg.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`max-w-[72%] px-3.5 py-2 rounded-2xl text-sm leading-relaxed ${
+              className={`max-w-[70%] px-5 py-3 rounded-[24px] text-[15px] leading-relaxed font-medium ${
                 mine
-                  ? 'bg-indigo-600 text-white rounded-br-sm'
-                  : 'bg-slate-800 text-slate-200 rounded-bl-sm'
+                  ? 'bg-[#111111] text-white rounded-br-sm'
+                  : 'bg-[#F2F2F2] text-[#111111] rounded-bl-sm border border-[#E5E5E5]'
               }`}
             >
               {msg.message}

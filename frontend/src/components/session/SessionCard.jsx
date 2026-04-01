@@ -7,13 +7,11 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext';
 
 const STATUS = {
-  PROPOSED:  { label: 'Proposed',  cls: 'text-amber-400  bg-amber-400/8  ring-amber-400/20' },
-  CONFIRMED: { label: 'Confirmed', cls: 'text-emerald-400 bg-emerald-400/8 ring-emerald-400/20' },
-  COMPLETED: { label: 'Completed', cls: 'text-blue-400   bg-blue-400/8   ring-blue-400/20' },
-  CANCELLED: { label: 'Cancelled', cls: 'text-red-400    bg-red-400/8    ring-red-400/20' },
+  PROPOSED:  { label: 'Proposed',  cls: 'bg-[#F9F9F9] border-[#E5E5E5] text-[#111111]' },
+  CONFIRMED: { label: 'Confirmed', cls: 'bg-[#111111] border-[#111111] text-white' },
+  COMPLETED: { label: 'Completed', cls: 'bg-green-100 border-green-200 text-green-800' },
+  CANCELLED: { label: 'Cancelled', cls: 'bg-red-50 border-red-100 text-red-600' },
 };
-
-const AVATAR = ['bg-indigo-600','bg-violet-600','bg-blue-600','bg-emerald-600','bg-rose-600'];
 
 const fmt = (d) => {
   if (!d) return '';
@@ -40,7 +38,6 @@ const SessionCard = ({ session, onSessionUpdated }) => {
 
   const peer = user?.id === user1?.id ? user2 : user1;
   const initials = peer?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
-  const avatarCls = AVATAR[(peer?.id || 0) % AVATAR.length];
   const s = STATUS[status] || STATUS.PROPOSED;
 
   return (
@@ -48,75 +45,77 @@ const SessionCard = ({ session, onSessionUpdated }) => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-slate-700 transition-colors"
+      className="bg-white border border-[#E5E5E5] rounded-[24px] p-6 hover:border-[#111111] transition-colors"
     >
-      <div className="flex items-start gap-3">
-        <div className={`h-9 w-9 rounded-lg ${avatarCls} flex items-center justify-center text-white text-xs font-semibold shrink-0 mt-0.5`}>
-          {initials}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-medium text-slate-100 truncate">
-              Session with {peer?.name || 'Unknown'}
-            </h3>
-            <span className={`inline-flex shrink-0 items-center px-2 py-0.5 rounded-md text-xs font-medium ring-1 ${s.cls}`}>
-              {s.label}
-            </span>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+        
+        <div className="flex items-start gap-4">
+          <div className="h-12 w-12 rounded-full bg-[#111111] flex items-center justify-center text-white text-sm font-bold shrink-0">
+            {initials}
           </div>
-
-          {status === 'PROPOSED' && proposedSlots?.length > 0 && (
-            <div className="mt-2 p-2.5 bg-slate-800/60 border border-slate-700/60 rounded-lg space-y-1">
-              <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest">Proposed slots</p>
-              {proposedSlots.map((slot, i) => (
-                <p key={i} className="text-xs text-slate-300">{fmt(slot.startTime)} → {fmt(slot.endTime)}</p>
-              ))}
+          <div>
+            <div className="flex items-center gap-3">
+              <h3 className="text-xl font-bold font-['Manrope'] text-[#111111]">{peer?.name || 'Peer'}</h3>
+              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border ${s.cls}`}>
+                {s.label}
+              </span>
             </div>
-          )}
+            
+            {status === 'PROPOSED' && proposedSlots?.length > 0 && (
+              <div className="mt-3 bg-[#F9F9F9] border border-[#E5E5E5] rounded-2xl p-4">
+                <p className="text-[11px] text-[#A3A3A3] font-bold uppercase tracking-wider mb-2">Requested Times</p>
+                <div className="space-y-1">
+                  {proposedSlots.map((slot, i) => (
+                    <p key={i} className="text-[13px] font-medium text-[#111111]">{fmt(slot.startTime)} → {fmt(slot.endTime)}</p>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          {status !== 'PROPOSED' && (startTime || endTime) && (
-            <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
-              <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{fmt(startTime)}</span>
-              {endTime && <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{fmt(endTime)}</span>}
-            </div>
-          )}
+            {status !== 'PROPOSED' && (startTime || endTime) && (
+              <div className="mt-3 flex items-center gap-4 text-sm font-medium text-[#666666]">
+                <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-[#111111]" />{fmt(startTime)}</span>
+                {endTime && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-[#111111]" />{fmt(endTime)}</span>}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Actions */}
-      {(status === 'PROPOSED' || status === 'CONFIRMED') && (
-        <div className="mt-3 flex justify-end gap-2 pt-3 border-t border-slate-800">
+        {/* Actions Menu */}
+        <div className="flex sm:flex-col justify-end items-end gap-2 pt-4 sm:pt-0 border-t border-[#E5E5E5] sm:border-0 w-full sm:w-auto">
           {status === 'PROPOSED' && user?.id === user2?.id && (
             <>
-              <Button variant="ghost" size="xs" onClick={() => run(() => sessionApi.cancelSession(id), 'Rejected')} disabled={loading}>
-                <X className="h-3 w-3" /> Reject
+              <Button variant="primary" size="sm" onClick={() => run(() => sessionApi.confirmSession(id, 0), 'Confirmed')} disabled={loading} className="w-full sm:w-auto">
+                <Check className="h-4 w-4" /> Accept
               </Button>
-              <Button variant="success" size="xs" onClick={() => run(() => sessionApi.confirmSession(id, 0), 'Session confirmed!')} disabled={loading}>
-                <Check className="h-3 w-3" /> Accept
+              <Button variant="outline" size="sm" onClick={() => run(() => sessionApi.cancelSession(id), 'Rejected')} disabled={loading} className="w-full sm:w-auto text-red-500 hover:text-red-600 hover:border-red-200">
+                Decline
               </Button>
             </>
           )}
           {status === 'PROPOSED' && user?.id === user1?.id && (
-            <Button variant="ghost" size="xs" onClick={() => run(() => sessionApi.cancelSession(id), 'Cancelled')} disabled={loading}>
-              Cancel request
+            <Button variant="outline" size="sm" onClick={() => run(() => sessionApi.cancelSession(id), 'Cancelled')} disabled={loading} className="w-full sm:w-auto">
+              Retract Request
             </Button>
           )}
           {status === 'CONFIRMED' && (
             <>
-              <Button variant="ghost" size="xs" onClick={() => run(() => sessionApi.cancelSession(id), 'Cancelled')} disabled={loading}>
-                Cancel
-              </Button>
               <a
                 href={meetLink}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 h-7 px-2.5 text-xs font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-9 px-4 text-sm font-semibold rounded-full bg-[#111111] text-white hover:bg-[#333333] transition-colors"
               >
-                <Video className="h-3 w-3" /> Join Meet
+                <Video className="h-4 w-4" /> Join Video
               </a>
+              <Button variant="ghost" size="sm" onClick={() => run(() => sessionApi.cancelSession(id), 'Cancelled')} disabled={loading} className="w-full sm:w-auto text-red-500 hover:text-red-600 hover:bg-red-50">
+                Cancel Session
+              </Button>
             </>
           )}
         </div>
-      )}
+
+      </div>
     </motion.div>
   );
 };

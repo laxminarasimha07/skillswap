@@ -7,32 +7,20 @@ import { useSearchParams } from 'react-router-dom';
 import { Users } from 'lucide-react';
 
 const CardSkeleton = () => (
-  <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4 animate-pulse">
-    <div className="flex items-start gap-3">
-      <div className="h-10 w-10 rounded-lg bg-slate-800 shrink-0" />
-      <div className="flex-1 space-y-2 pt-0.5">
-        <div className="h-3 bg-slate-800 rounded w-2/3" />
-        <div className="h-2.5 bg-slate-800 rounded w-1/3" />
+  <div className="bg-white border border-[#E5E5E5] rounded-[24px] p-6 space-y-6 animate-pulse">
+    <div className="flex items-center gap-4">
+      <div className="h-12 w-12 rounded-full bg-[#E5E5E5] shrink-0" />
+      <div className="flex-1 space-y-3">
+        <div className="h-4 bg-[#E5E5E5] rounded-full w-2/3" />
+        <div className="h-3 bg-[#E5E5E5] rounded-full w-1/3" />
       </div>
     </div>
-    <div className="space-y-2">
-      <div className="h-2 bg-slate-800 rounded w-1/4" />
-      <div className="flex gap-1.5">
-        <div className="h-5 w-12 bg-slate-800 rounded-md" />
-        <div className="h-5 w-16 bg-slate-800 rounded-md" />
-        <div className="h-5 w-10 bg-slate-800 rounded-md" />
+    <div className="space-y-4 pt-4 border-t border-[#F2F2F2]">
+      <div className="h-3 bg-[#E5E5E5] rounded-full w-1/4" />
+      <div className="flex gap-2">
+        <div className="h-6 w-16 bg-[#F2F2F2] rounded-full" />
+        <div className="h-6 w-20 bg-[#F2F2F2] rounded-full" />
       </div>
-    </div>
-    <div className="space-y-2">
-      <div className="h-2 bg-slate-800 rounded w-1/4" />
-      <div className="flex gap-1.5">
-        <div className="h-5 w-14 bg-slate-800 rounded-md" />
-        <div className="h-5 w-10 bg-slate-800 rounded-md" />
-      </div>
-    </div>
-    <div className="pt-2 border-t border-slate-800 flex justify-between">
-      <div className="h-3 w-20 bg-slate-800 rounded" />
-      <div className="h-6 w-16 bg-slate-800 rounded-lg" />
     </div>
   </div>
 );
@@ -60,28 +48,25 @@ const FeedPage = () => {
     : suggestions;
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] bg-slate-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-        {/* Header */}
-        <div className="mb-7">
-          <h1 className="text-xl font-semibold text-slate-100 tracking-tight">
-            {query ? `Results for "${query}"` : 'Discover'}
+    <div className="min-h-screen bg-white pt-10">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 py-12">
+        <div className="mb-16">
+          <h1 className="text-4xl sm:text-5xl font-extrabold font-['Manrope'] text-[#111111] tracking-tight">
+            {query ? `Discovering "${query}"` : 'Your Network.'}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-lg text-[#666666] mt-3">
             {query
-              ? `${filtered.length} student${filtered.length !== 1 ? 's' : ''} matched`
-              : `Skill matches personalized for you, ${user?.name?.split(' ')[0]}`}
+              ? `${filtered.length} matching peers found`
+              : `Handpicked skill matches for ${user?.name?.split(' ')[0]}`}
           </p>
         </div>
 
-        {/* Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
           </div>
         ) : filtered.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <AnimatePresence>
               {filtered.map((s, i) => (
                 <SuggestionCard key={s.user.id} suggestion={s} index={i} />
@@ -90,18 +75,17 @@ const FeedPage = () => {
           </div>
         ) : (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-24 text-center"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center py-32 border border-dashed border-[#E5E5E5] rounded-[32px] bg-[#F9F9F9]"
           >
-            <div className="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-4">
-              <Users className="h-5 w-5 text-slate-600" />
+            <div className="h-16 w-16 mb-6 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center">
+              <Users className="h-6 w-6 text-[#111111]" />
             </div>
-            <p className="text-sm font-medium text-slate-300">
-              {query ? 'No matches found' : 'No suggestions yet'}
-            </p>
-            <p className="text-xs text-slate-600 mt-1 max-w-xs">
-              {query ? `Try a different search term.` : 'Update your skills in your profile to see personalized matches.'}
+            <h3 className="text-xl font-bold text-[#111111] font-['Manrope'] tracking-tight">
+              {query ? 'No results found' : 'No matches yet'}
+            </h3>
+            <p className="text-[#666666] mt-2 mb-6 max-w-sm text-center">
+              {query ? 'Try a different search term or check back later.' : 'Update your profile skills to get better peer recommendations.'}
             </p>
           </motion.div>
         )}
